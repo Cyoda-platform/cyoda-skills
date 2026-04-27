@@ -1,0 +1,41 @@
+{
+  "skill_name": "docs",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "How do I search for entities created in the last 7 days?",
+      "expected_output": "Synthesized answer with correct endpoint and filter syntax, shown as a curl example. Assumes cyoda CLI is installed.",
+      "files": {},
+      "assertions": [
+        { "id": "runs-cyoda-help", "text": "Runs cyoda help to retrieve local docs", "type": "behavior" },
+        { "id": "synthesizes-answer", "text": "Synthesizes a direct answer with endpoint and filter syntax", "type": "behavior" },
+        { "id": "shows-example", "text": "Shows a concrete curl or code example", "type": "format" },
+        { "id": "no-raw-dump", "text": "Does NOT paste raw cyoda help output without explanation", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "What's the endpoint to trigger a transition?",
+      "expected_output": "Asks whether to install cyoda CLI via /cyoda:setup or use web docs — does not proceed without user choice. Assumes cyoda CLI is NOT installed.",
+      "files": {},
+      "assertions": [
+        { "id": "detects-cli-missing", "text": "Detects cyoda CLI is not installed", "type": "behavior" },
+        { "id": "offers-choice", "text": "Asks user whether to install via /cyoda:setup or use web docs", "type": "behavior" },
+        { "id": "waits-for-choice", "text": "Does NOT proceed to answer without user's choice", "type": "behavior" },
+        { "id": "explains-preference", "text": "Explains why local docs are preferred over web docs", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "How does Cyoda handle schema version migration when I lock a model and then need to add a field?",
+      "expected_output": "Complete answer combining local cyoda help and web docs, noting that web docs may differ from installed version. Assumes cyoda CLI is installed.",
+      "files": {},
+      "assertions": [
+        { "id": "checks-local-help", "text": "Runs cyoda help first", "type": "behavior" },
+        { "id": "supplements-with-web", "text": "Fetches supplementary info from web docs when local help is insufficient", "type": "behavior" },
+        { "id": "synthesizes-complete", "text": "Synthesizes a complete answer combining both sources", "type": "behavior" },
+        { "id": "no-stops-at-local", "text": "Does NOT stop at 'cyoda help doesn't cover this' without checking web docs", "type": "behavior" }
+      ]
+    }
+  ]
+}

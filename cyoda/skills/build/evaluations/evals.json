@@ -1,0 +1,52 @@
+{
+  "skill_name": "build",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/cyoda:build — add an Order entity with draft and submitted states",
+      "expected_output": "Reads config, inspects existing models, asks clarifying questions, generates workflow JSON, shows it for confirmation, registers via POST, reports success and suggests /cyoda:test",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "reads-config", "text": "Reads .cyoda/config for endpoint", "type": "behavior" },
+        { "id": "inspects-models", "text": "Inspects existing entity models on the instance", "type": "behavior" },
+        { "id": "asks-clarifying", "text": "Asks clarifying questions (transition name, triggers) before generating", "type": "behavior" },
+        { "id": "shows-config-for-confirmation", "text": "Shows generated workflow JSON for user confirmation before registering", "type": "behavior" },
+        { "id": "registers-via-post", "text": "Registers workflow via POST to the import endpoint", "type": "behavior" },
+        { "id": "suggests-test", "text": "Reports success and suggests running /cyoda:test", "type": "behavior" },
+        { "id": "no-register-without-confirm", "text": "Does NOT register without showing config for confirmation first", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/cyoda:build — add a cancel transition to the Order entity",
+      "expected_output": "Inspects existing Order entity, shows current states/transitions, asks which state 'cancel' transitions from, generates updated config, shows for confirmation, registers",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "inspects-existing", "text": "Inspects existing Order entity models", "type": "behavior" },
+        { "id": "shows-current-state", "text": "Shows current states and transitions before proposing changes", "type": "behavior" },
+        { "id": "asks-source-state", "text": "Asks which state 'cancel' transitions from", "type": "behavior" },
+        { "id": "shows-diff-for-confirm", "text": "Shows updated config for confirmation before registering", "type": "behavior" },
+        { "id": "no-new-entity", "text": "Does NOT create a brand new entity instead of modifying existing", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/cyoda:build — add approval state to RiskAssessment",
+      "expected_output": "Shows PRODUCTION warning at start, generates config normally, requires explicit 'confirm' before registering — does not block the full build loop",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=https://api.eu.cyoda.net\nCYODA_ENV=production\nCYODA_TOKEN=eyJfake..."
+      },
+      "assertions": [
+        { "id": "shows-production-warning", "text": "Shows PRODUCTION warning at the start of the skill", "type": "behavior" },
+        { "id": "generates-config-normally", "text": "Generates config and shows for confirmation as normal", "type": "behavior" },
+        { "id": "requires-confirm-keyword", "text": "Requires user to type 'confirm' before registering to production", "type": "behavior" },
+        { "id": "no-register-without-confirm", "text": "Does NOT register to production without explicit 'confirm'", "type": "behavior" },
+        { "id": "no-full-block", "text": "Does NOT block the entire build loop — only adds the confirmation step", "type": "behavior" }
+      ]
+    }
+  ]
+}

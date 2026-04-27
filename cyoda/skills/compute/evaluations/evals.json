@@ -1,0 +1,46 @@
+{
+  "skill_name": "compute",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to implement a processor that calls our pricing API when an order transitions to submitted",
+      "expected_output": "Explains gRPC connection lifecycle, tag registration, processor request/response pattern, idempotency via requestId, 60s timeout with async alternative — language-agnostic throughout",
+      "files": {},
+      "assertions": [
+        { "id": "explains-lifecycle", "text": "Explains the gRPC connection lifecycle (join, greet, handle, keep-alive)", "type": "behavior" },
+        { "id": "explains-tag-routing", "text": "Shows how to register with the correct tags", "type": "behavior" },
+        { "id": "shows-request-response", "text": "Provides processor request/response pattern", "type": "behavior" },
+        { "id": "notes-idempotency", "text": "Notes idempotency requirement via requestId", "type": "behavior" },
+        { "id": "mentions-timeout", "text": "Mentions 60s timeout and suggests async for slow operations", "type": "behavior" },
+        { "id": "references-examples", "text": "Points to grpc-patterns.md and processor.md examples", "type": "behavior" },
+        { "id": "no-language-specific", "text": "Does NOT provide language-specific code — guidance is language-agnostic", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need to guard a transition with a check that the entity's amount is over 10000 and it's been validated by our fraud system",
+      "expected_output": "Explains criteria vs built-in options, shows criteria request/response pattern with boolean return semantics, points to criteria.md example",
+      "files": {},
+      "assertions": [
+        { "id": "explains-criteria-vs-builtin", "text": "Explains when built-in criteria could suffice vs custom compute criteria", "type": "behavior" },
+        { "id": "shows-request-response", "text": "Shows criteria request/response pattern", "type": "behavior" },
+        { "id": "notes-boolean-return", "text": "Notes boolean return semantics (true = criteria met)", "type": "behavior" },
+        { "id": "references-example", "text": "Points to criteria.md example", "type": "behavior" },
+        { "id": "no-language-specific", "text": "Does NOT generate language-specific code", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Do I need a compute node for my order approval workflow? Transitions are triggered by users clicking buttons.",
+      "expected_output": "Assesses the use case, explains manual transitions don't need compute nodes, explains what would require one, concludes no compute node needed",
+      "files": {},
+      "assertions": [
+        { "id": "assesses-use-case", "text": "Assesses the specific use case before answering", "type": "behavior" },
+        { "id": "explains-manual-no-compute", "text": "Explains that manual transitions do not need compute nodes", "type": "behavior" },
+        { "id": "explains-when-needed", "text": "Explains what scenarios would require a compute node", "type": "behavior" },
+        { "id": "correct-conclusion", "text": "Concludes no compute node is needed for this case", "type": "behavior" },
+        { "id": "no-unnecessary-recommendation", "text": "Does NOT recommend a compute node when one is not needed", "type": "behavior" }
+      ]
+    }
+  ]
+}

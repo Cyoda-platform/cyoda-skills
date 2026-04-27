@@ -1,0 +1,50 @@
+{
+  "skill_name": "setup",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/cyoda:setup",
+      "expected_output": "Walks through local install: asks local vs cloud, runs brew install, runs cyoda init, verifies health, writes .cyoda/config, gitignores it, notes mock auth is active",
+      "files": {},
+      "assertions": [
+        { "id": "asks-local-vs-cloud", "text": "Asks whether user wants local or cloud setup", "type": "behavior" },
+        { "id": "runs-brew-install", "text": "Runs brew install commands for cyoda", "type": "behavior" },
+        { "id": "runs-cyoda-init", "text": "Runs cyoda init", "type": "behavior" },
+        { "id": "verifies-health", "text": "Verifies health endpoint responds", "type": "behavior" },
+        { "id": "writes-config", "text": "Writes .cyoda/config with localhost endpoint", "type": "behavior" },
+        { "id": "gitignores-config", "text": "Adds .cyoda/config to .gitignore", "type": "behavior" },
+        { "id": "notes-mock-auth", "text": "Notes mock auth is active for local — no login needed", "type": "behavior" },
+        { "id": "no-credentials", "text": "Does NOT ask for credentials on local setup", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/cyoda:setup — I want to use Cyoda Cloud",
+      "expected_output": "Asks if user has an account, collects endpoint URL, writes only CYODA_ENDPOINT to .cyoda/config, gitignores it, directs to /cyoda:login next",
+      "files": {},
+      "assertions": [
+        { "id": "asks-account", "text": "Asks if user has a Cyoda Cloud account", "type": "behavior" },
+        { "id": "collects-endpoint", "text": "Collects endpoint URL from user", "type": "behavior" },
+        { "id": "writes-endpoint-only", "text": "Writes only CYODA_ENDPOINT to .cyoda/config — no token yet", "type": "behavior" },
+        { "id": "directs-to-login", "text": "Directs user to run /cyoda:login next", "type": "behavior" },
+        { "id": "gitignores-config", "text": "Gitignores .cyoda/config", "type": "behavior" },
+        { "id": "no-credentials-in-setup", "text": "Does NOT ask for credentials — that is login's job", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/cyoda:setup",
+      "expected_output": "Detects existing installation, skips brew install, verifies health, updates .cyoda/config if needed, reports already ready",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "detects-existing", "text": "Detects cyoda is already installed", "type": "behavior" },
+        { "id": "skips-brew", "text": "Does NOT re-run brew install when already installed", "type": "behavior" },
+        { "id": "verifies-health", "text": "Verifies health endpoint", "type": "behavior" },
+        { "id": "no-force-init", "text": "Does NOT run cyoda init again without --force", "type": "behavior" },
+        { "id": "reports-ready", "text": "Reports already ready", "type": "format" }
+      ]
+    }
+  ]
+}

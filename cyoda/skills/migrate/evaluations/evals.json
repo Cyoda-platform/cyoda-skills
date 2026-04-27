@@ -1,0 +1,52 @@
+{
+  "skill_name": "migrate",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/cyoda:migrate",
+      "expected_output": "Verifies local instance is running, exports all entity models/workflows to migration/ directory, invokes setup+login for cloud, imports each workflow, runs /cyoda:test against cloud, instructs user to update app config",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "verifies-local", "text": "Verifies local cyoda-go instance is running before doing anything", "type": "behavior" },
+        { "id": "exports-models", "text": "Exports all entity models and workflows to migration/ directory", "type": "behavior" },
+        { "id": "invokes-setup-login", "text": "Invokes /cyoda:setup (cloud mode) then /cyoda:login", "type": "behavior" },
+        { "id": "imports-to-cloud", "text": "Imports each workflow to cloud", "type": "behavior" },
+        { "id": "runs-test-on-cloud", "text": "Runs /cyoda:test against cloud after import", "type": "behavior" },
+        { "id": "instructs-config-update", "text": "Instructs user to update app config to point to cloud", "type": "behavior" },
+        { "id": "no-migrate-without-verify", "text": "Does NOT attempt export without first verifying local instance", "type": "behavior" },
+        { "id": "no-skip-test", "text": "Does NOT skip /cyoda:test after import", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/cyoda:migrate",
+      "expected_output": "Detects local instance is unreachable, tells user to start cyoda-go first, stops gracefully without attempting export",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "detects-unreachable", "text": "Detects local instance is unreachable", "type": "behavior" },
+        { "id": "instructs-start", "text": "Tells user to start cyoda-go first", "type": "behavior" },
+        { "id": "stops-gracefully", "text": "Stops gracefully — does not attempt export", "type": "behavior" },
+        { "id": "no-silent-proceed", "text": "Does NOT silently proceed to cloud setup without local data", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/cyoda:migrate — my order entity already exists in cloud with an old workflow",
+      "expected_output": "Checks what exists in cloud before importing, shows the conflict, asks whether to overwrite or skip, proceeds based on user choice",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "checks-cloud-first", "text": "Checks what already exists in cloud before importing", "type": "behavior" },
+        { "id": "shows-conflict", "text": "Shows the conflict to the user", "type": "format" },
+        { "id": "asks-overwrite-or-skip", "text": "Asks whether to overwrite or skip the conflicting workflow", "type": "behavior" },
+        { "id": "respects-user-choice", "text": "Proceeds based on user's choice", "type": "behavior" },
+        { "id": "no-silent-overwrite", "text": "Does NOT silently overwrite existing cloud workflows", "type": "behavior" }
+      ]
+    }
+  ]
+}

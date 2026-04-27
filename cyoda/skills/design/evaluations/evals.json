@@ -1,0 +1,44 @@
+{
+  "skill_name": "design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to build a chess app where players can create rooms and games are saved in Cyoda Cloud",
+      "expected_output": "Gives brief Cyoda orientation, identifies Room/Game/Move as entities, asks about states and transitions one question at a time, presents structured design summary without forcing compute nodes",
+      "files": {},
+      "assertions": [
+        { "id": "gives-orientation", "text": "Gives brief EDBMS/entity/workflow orientation for newcomer", "type": "behavior" },
+        { "id": "one-question-at-a-time", "text": "Asks only one question at a time", "type": "behavior" },
+        { "id": "identifies-entities", "text": "Identifies Room, Game, Move as likely entities", "type": "behavior" },
+        { "id": "asks-states", "text": "Asks about states for each entity", "type": "behavior" },
+        { "id": "compute-nodes-optional", "text": "Presents compute nodes as optional, not required", "type": "behavior" },
+        { "id": "produces-design-summary", "text": "Produces a structured design summary", "type": "format" },
+        { "id": "no-workflow-json-early", "text": "Does NOT generate workflow JSON before design is confirmed", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need to model a risk assessment entity with states for pending, under_review, and approved. It needs a scheduled timeout.",
+      "expected_output": "Skips orientation (user knows Cyoda), asks clarifying questions about transitions, recognises scheduled timeout pattern from patterns.md, asks about compute node needs",
+      "files": {},
+      "assertions": [
+        { "id": "skips-orientation", "text": "Does NOT give Cyoda orientation to an experienced user", "type": "behavior" },
+        { "id": "asks-clarifying", "text": "Asks clarifying questions about transitions and triggers", "type": "behavior" },
+        { "id": "recognises-timeout-pattern", "text": "Recognises the scheduled timeout pattern and references it", "type": "behavior" },
+        { "id": "asks-compute-nodes", "text": "Asks about compute node needs", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I want a simple document approval workflow — nothing fancy",
+      "expected_output": "Asks about domain objects and states, presents compute nodes as optional, accepts 'no compute nodes needed' gracefully, produces design summary without compute nodes",
+      "files": {},
+      "assertions": [
+        { "id": "asks-domain-objects", "text": "Asks about domain objects and their states", "type": "behavior" },
+        { "id": "presents-compute-optional", "text": "Presents compute nodes as optional when asking about them", "type": "behavior" },
+        { "id": "accepts-no-compute", "text": "Accepts 'no compute nodes needed' gracefully without pushing back", "type": "behavior" },
+        { "id": "no-compute-in-summary", "text": "Does NOT include compute nodes in design summary when not needed", "type": "behavior" }
+      ]
+    }
+  ]
+}

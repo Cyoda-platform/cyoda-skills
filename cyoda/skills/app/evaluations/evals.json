@@ -1,0 +1,44 @@
+{
+  "skill_name": "app",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/cyoda:app I want to build a task management app",
+      "expected_output": "Gives brief Cyoda orientation, directs to /cyoda:design, then guides step-by-step through setup → build → test → migrate journey",
+      "files": {},
+      "assertions": [
+        { "id": "gives-orientation", "text": "Gives brief Cyoda orientation for newcomer", "type": "behavior" },
+        { "id": "directs-to-design", "text": "Directs user to /cyoda:design for domain brainstorm", "type": "behavior" },
+        { "id": "guides-to-setup", "text": "After design, guides to /cyoda:setup", "type": "behavior" },
+        { "id": "guides-to-build", "text": "After setup, guides to /cyoda:build", "type": "behavior" },
+        { "id": "guides-to-test", "text": "After build, guides to /cyoda:test", "type": "behavior" },
+        { "id": "offers-migrate", "text": "Offers /cyoda:migrate when ready for cloud", "type": "behavior" },
+        { "id": "no-design-and-build-together", "text": "Does NOT try to design AND build in the same skill invocation", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/cyoda:app — I already know Cyoda, just want to start building",
+      "expected_output": "Notes experienced users can skip to individual skills, points directly to /cyoda:build, does not force orientation or design",
+      "files": {},
+      "assertions": [
+        { "id": "acknowledges-experience", "text": "Notes experienced users can skip directly to individual skills", "type": "behavior" },
+        { "id": "points-to-build", "text": "Points directly to /cyoda:build", "type": "behavior" },
+        { "id": "no-forced-orientation", "text": "Does NOT give orientation when user says they already know Cyoda", "type": "behavior" },
+        { "id": "no-forced-design", "text": "Does NOT force user through design step when they want to skip", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/cyoda:app — I want to use Cyoda Cloud, not install anything locally",
+      "expected_output": "Accepts cloud-first approach, guides to /cyoda:setup (cloud mode) then /cyoda:login, does not insist on local installation",
+      "files": {},
+      "assertions": [
+        { "id": "accepts-cloud-first", "text": "Accepts cloud-first approach without pushback", "type": "behavior" },
+        { "id": "guides-to-cloud-setup", "text": "Guides to /cyoda:setup in cloud mode", "type": "behavior" },
+        { "id": "guides-to-login", "text": "Guides to /cyoda:login for authentication", "type": "behavior" },
+        { "id": "no-local-insistence", "text": "Does NOT insist on local cyoda-go installation", "type": "behavior" }
+      ]
+    }
+  ]
+}

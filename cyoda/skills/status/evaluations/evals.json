@@ -1,0 +1,44 @@
+{
+  "skill_name": "status",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "What's my Cyoda status?",
+      "expected_output": "Reports 'Connected to Local cyoda-go — vX.X.X' without a PRODUCTION marker",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "reads-config", "text": "Reads .cyoda/config for endpoint", "type": "behavior" },
+        { "id": "calls-health", "text": "Calls health endpoint on localhost", "type": "behavior" },
+        { "id": "reports-connected-local", "text": "Reports 'Connected to Local cyoda-go' with version number", "type": "format" },
+        { "id": "no-production-marker", "text": "Does NOT show PRODUCTION warning", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Check my connection",
+      "expected_output": "Reports connection with prominent PRODUCTION marker and version number",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=https://api.eu.cyoda.net\nCYODA_ENV=production\nCYODA_TOKEN=eyJfake..."
+      },
+      "assertions": [
+        { "id": "reads-env-production", "text": "Reads CYODA_ENV=production from config", "type": "behavior" },
+        { "id": "shows-production-marker", "text": "Shows PRODUCTION marker prominently in output", "type": "format" },
+        { "id": "includes-version", "text": "Includes version number in output", "type": "format" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Am I connected to Cyoda?",
+      "expected_output": "Reports 'Not connected' and directs user to run /cyoda:setup",
+      "files": {},
+      "assertions": [
+        { "id": "detects-missing-config", "text": "Detects missing .cyoda/config", "type": "behavior" },
+        { "id": "reports-not-connected", "text": "Reports 'Not connected' or equivalent", "type": "format" },
+        { "id": "suggests-setup", "text": "Directs user to run /cyoda:setup", "type": "behavior" },
+        { "id": "no-crash", "text": "Does NOT crash or show a raw error instead of a helpful message", "type": "behavior" }
+      ]
+    }
+  ]
+}

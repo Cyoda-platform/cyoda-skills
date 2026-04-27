@@ -1,0 +1,51 @@
+{
+  "skill_name": "debug",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "My 'approve' transition isn't firing — the entity just stays in under_review",
+      "expected_output": "Asks for entity ID, fetches current state, checks if approve transition is valid from under_review, checks criteria, checks processor logs — provides specific diagnosis not generic advice",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "asks-entity-id", "text": "Asks for the entity ID", "type": "behavior" },
+        { "id": "fetches-entity-state", "text": "Fetches current entity state", "type": "behavior" },
+        { "id": "checks-transition-valid", "text": "Checks if 'approve' transition is valid from under_review state", "type": "behavior" },
+        { "id": "checks-criteria", "text": "Checks criteria attached to the approve transition", "type": "behavior" },
+        { "id": "specific-diagnosis", "text": "Provides specific diagnosis based on findings, not generic advice", "type": "behavior" },
+        { "id": "no-generic-advice", "text": "Does NOT give generic debugging advice without checking actual entity state", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Show me the full history of entity abc-123 — I need to audit what happened to it",
+      "expected_output": "Switches to observation mode, calls entity history endpoint for abc-123, presents transition history in readable format with states/timestamps/processor invocations, offers point-in-time lookup",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "uses-observation-mode", "text": "Switches to observation mode (not debugging mode)", "type": "behavior" },
+        { "id": "calls-history-endpoint", "text": "Calls entity history endpoint for entity abc-123", "type": "behavior" },
+        { "id": "presents-history", "text": "Presents transition history in readable format with states and timestamps", "type": "format" },
+        { "id": "offers-pit-lookup", "text": "Offers point-in-time lookup if needed", "type": "behavior" },
+        { "id": "no-debug-framing", "text": "Does NOT treat an audit request as a debugging problem", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "My processor keeps timing out — transitions hang for 60 seconds then fail",
+      "expected_output": "Identifies 60s timeout as root cause, explains async processing pattern for long operations, checks tag routing, points to grpc-patterns.md",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "identifies-timeout", "text": "Identifies 60s timeout as the root cause", "type": "behavior" },
+        { "id": "explains-async-pattern", "text": "Suggests async processing pattern for long-running operations", "type": "behavior" },
+        { "id": "checks-tag-routing", "text": "Checks tag routing to ensure processor is receiving requests", "type": "behavior" },
+        { "id": "references-grpc-patterns", "text": "Points to grpc-patterns.md for reconnection guidance", "type": "behavior" },
+        { "id": "no-increase-timeout", "text": "Does NOT suggest increasing the timeout without explaining the async pattern", "type": "behavior" }
+      ]
+    }
+  ]
+}

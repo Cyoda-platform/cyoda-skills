@@ -1,0 +1,51 @@
+{
+  "skill_name": "test",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/cyoda:test",
+      "expected_output": "Reads .cyoda/config, asks guided vs automated, in automated mode runs entity creation/transition/state verification sequence and reports pass/fail per test, suggests /cyoda:debug on failure",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "reads-config", "text": "Reads .cyoda/config for endpoint before running", "type": "behavior" },
+        { "id": "asks-mode", "text": "Asks guided vs automated mode", "type": "behavior" },
+        { "id": "runs-test-sequence", "text": "In automated mode: creates entity, verifies initial state, triggers transition, checks new state", "type": "behavior" },
+        { "id": "reports-per-test", "text": "Reports pass/fail per individual test", "type": "format" },
+        { "id": "suggests-debug", "text": "Suggests /cyoda:debug on failure", "type": "behavior" },
+        { "id": "no-production-without-confirm", "text": "Does NOT run tests against production without explicit confirmation", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/cyoda:test — guided mode, Order entity with submit transition",
+      "expected_output": "Generates a fully populated smoke-test.sh with ENTITY_NAME=order and TRANSITION_NAME=submit — no placeholders remaining — with chmod and run instructions",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "generates-script", "text": "Generates populated smoke-test.sh from template", "type": "behavior" },
+        { "id": "fills-entity-name", "text": "Replaces ENTITY_NAME placeholder with 'order'", "type": "format" },
+        { "id": "fills-transition-name", "text": "Replaces TRANSITION_NAME placeholder with 'submit'", "type": "format" },
+        { "id": "no-placeholders", "text": "Does NOT leave any ${...} placeholders in the generated script", "type": "format" },
+        { "id": "provides-run-instructions", "text": "Provides chmod and run instructions", "type": "behavior" },
+        { "id": "no-auto-run-in-guided", "text": "Does NOT run tests automatically in guided mode", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/cyoda:test — I want to check that point-in-time queries work",
+      "expected_output": "Runs transition test first to create history, then queries entity at a timestamp before the transition, verifies historical state matches pre-transition state",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "creates-history-first", "text": "Runs the transition test first to create entity history", "type": "behavior" },
+        { "id": "queries-before-transition", "text": "Queries entity at a timestamp before the transition occurred", "type": "behavior" },
+        { "id": "verifies-historical-state", "text": "Verifies historical state matches pre-transition state", "type": "behavior" },
+        { "id": "no-pit-before-history", "text": "Does NOT test point-in-time before creating any entity history", "type": "behavior" }
+      ]
+    }
+  ]
+}
