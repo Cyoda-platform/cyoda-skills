@@ -1,0 +1,22 @@
+{
+  "workflows": [
+    {
+      "version": "1",
+      "name": "${WORKFLOW_NAME}",
+      "initialState": "${INITIAL_STATE}",
+      "active": true,
+      "states": {
+        "${INITIAL_STATE}": {
+          "transitions": [
+            {
+              "name": "${TRANSITION_NAME}",
+              "next": "${NEXT_STATE}",
+              "manual": true
+            }
+          ]
+        },
+        "${NEXT_STATE}": {}
+      }
+    }
+  ]
+}

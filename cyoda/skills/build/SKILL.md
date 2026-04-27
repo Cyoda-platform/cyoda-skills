@@ -1,0 +1,92 @@
+---
+name: build
+description: Incrementally build Cyoda entity models and workflows. Inspects the running instance, brainstorms the next change, generates config, and registers it. Supports new entities, new states, new transitions, criteria, and schema mode changes.
+disable-model-invocation: true
+allowed-tools: Bash(curl *) Bash(cat *) Bash(grep *) Bash(echo *) Bash(tee *) Bash(jq *)
+---
+
+## Cyoda Incremental Build
+
+Reading connection config:
+```!
+jq . .cyoda/config 2>/dev/null || echo '{"endpoint":"none"}'
+```
+
+If `"endpoint":"none"` or config is absent: *"No Cyoda instance configured. Run `/cyoda:setup` first."* Stop.
+
+If `.env` equals `production`: display **"⚠️ Operating against a PRODUCTION Cyoda instance. All changes will affect live data. You will be asked to confirm before each registration."**
+
+### Step 1 — Inspect current state
+
+```!
+ENDPOINT=$(jq -r '.endpoint' .cyoda/config)
+TOKEN=$(jq -r '.token // ""' .cyoda/config)
+AUTH_HEADER=$([ -n "$TOKEN" ] && echo "Authorization: Bearer $TOKEN" || echo "X-Mock-Auth: true")
+curl -sf -H "$AUTH_HEADER" "${ENDPOINT%/}/api/model" 2>/dev/null || echo "[]"
+```
+
+Show the user what entity models currently exist in the instance.
+
+If this is a fresh instance with no models: suggest starting with the hello world increment. Reference [examples/hello-world.md](examples/hello-world.md) for the minimal starting point.
+
+### Step 2 — Brainstorm next increment
+
+Ask: *"What would you like to add or change? Options:*
+- *New entity model with workflow*
+- *New state to an existing entity*
+- *New transition between states*
+- *Add criteria to a transition*
+- *Add a processor to a transition*
+- *Lock schema (move from discover to strict mode)*
+- *Something else"*
+
+Wait for the user's choice.
+
+### Step 3 — Clarify and generate config
+
+Based on the chosen increment, ask the minimum clarifying questions (one at a time) and generate the JSON config. Show it to the user:
+
+*"Here's the config I'll register:"*
+```json
+[generated config here]
+```
+*"Does this look right? (yes to proceed, or describe changes)"*
+
+Use [templates/workflow.json](templates/workflow.json) and [templates/entity-model.json](templates/entity-model.json) as starting points.
+
+### Step 4 — Register
+
+If `.env` equals `production`: *"You're about to register this change to PRODUCTION. Type 'confirm' to proceed."* Wait for explicit `confirm`.
+
+```bash
+ENDPOINT=$(jq -r '.endpoint' .cyoda/config)
+TOKEN=$(jq -r '.token // ""' .cyoda/config)
+AUTH_HEADER=$([ -n "$TOKEN" ] && echo "-H 'Authorization: Bearer $TOKEN'" || echo "")
+
+# Example for workflow import — adjust endpoint per the Cyoda OpenAPI spec:
+curl -X POST ${AUTH_HEADER} \
+  -H 'Content-Type: application/json' \
+  -d '${GENERATED_CONFIG}' \
+  "${ENDPOINT%/}/api/model/${ENTITY_NAME}/${MODEL_VERSION}/workflow/import"
+```
+
+Show the response. If error: delegate to `/cyoda:debug` for diagnosis.
+
+### Step 5 — Verify and loop
+
+*"Registration complete."*
+
+Re-inspect the current entity/workflow state to show what changed:
+
+```!
+ENDPOINT=$(jq -r '.endpoint' .cyoda/config)
+TOKEN=$(jq -r '.token // ""' .cyoda/config)
+AUTH_HEADER=$([ -n "$TOKEN" ] && echo "Authorization: Bearer $TOKEN" || echo "X-Mock-Auth: true")
+curl -sf -H "$AUTH_HEADER" "${ENDPOINT%/}/api/model" 2>/dev/null || echo "[]"
+```
+
+Show the updated model state. Offer: *"Run `/cyoda:test` to smoke-test this increment, or tell me the next increment to add."*
+
+Repeat from Step 2 for the next increment.
+
+For API details on any endpoint, invoke `/cyoda:docs`.

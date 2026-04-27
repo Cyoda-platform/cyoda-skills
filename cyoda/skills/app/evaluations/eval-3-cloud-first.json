@@ -1,0 +1,17 @@
+{
+  "name": "cloud-first-no-local-install",
+  "description": "User wants to build for Cyoda Cloud without installing cyoda-go locally",
+  "input": {
+    "userMessage": "/cyoda:app — I want to use Cyoda Cloud, not install anything locally"
+  },
+  "expectedBehavior": [
+    "Accepts cloud-first approach",
+    "Guides to /cyoda:setup (cloud mode) then /cyoda:login",
+    "Does not insist on local cyoda-go installation",
+    "Full journey works with cloud endpoint"
+  ],
+  "antiPatterns": [
+    "Insisting on local installation before cloud use",
+    "Skipping auth guidance for cloud setup"
+  ]
+}

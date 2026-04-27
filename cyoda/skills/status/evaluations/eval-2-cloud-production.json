@@ -1,0 +1,16 @@
+{
+  "name": "cloud-production-instance",
+  "description": "User connected to Cyoda Cloud with env:production",
+  "input": {
+    "userMessage": "Check my connection"
+  },
+  "expectedBehavior": [
+    "Reads env:production from config",
+    "Reports connection with prominent PRODUCTION marker",
+    "Includes version number"
+  ],
+  "antiPatterns": [
+    "Missing production warning",
+    "Treating production as development"
+  ]
+}

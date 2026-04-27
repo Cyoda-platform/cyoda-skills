@@ -1,0 +1,16 @@
+{
+  "name": "migration-without-local-instance",
+  "description": "User tries to migrate but local cyoda-go is not running",
+  "input": {
+    "userMessage": "/cyoda:migrate"
+  },
+  "expectedBehavior": [
+    "Detects local instance is unreachable",
+    "Tells user to start cyoda-go first",
+    "Stops gracefully — does not attempt export"
+  ],
+  "antiPatterns": [
+    "Attempting export when local is unreachable",
+    "Silently proceeding to cloud setup without local data"
+  ]
+}

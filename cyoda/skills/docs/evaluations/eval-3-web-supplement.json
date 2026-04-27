@@ -1,0 +1,18 @@
+{
+  "name": "cli-installed-web-supplement",
+  "description": "User asks about a topic not fully covered by cyoda help — skill must supplement with web docs",
+  "input": {
+    "userMessage": "How does Cyoda handle schema version migration when I lock a model and then need to add a field?"
+  },
+  "expectedBehavior": [
+    "Runs cyoda help and finds it doesn't fully address schema migration",
+    "Fetches supplementary info from the web docs at cyoda-docs-feature-cyoda-go-init.surge.sh",
+    "Synthesizes a complete answer combining local help and web docs",
+    "Notes that web docs reflect the latest version which may differ from installed version"
+  ],
+  "antiPatterns": [
+    "Stopping at 'cyoda help doesn't cover this' without fetching web docs",
+    "Only returning local help output without synthesis",
+    "Claiming no answer exists when web docs cover it"
+  ]
+}

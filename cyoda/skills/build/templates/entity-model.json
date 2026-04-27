@@ -1,0 +1,5 @@
+{
+  "entityName": "${ENTITY_NAME}",
+  "modelVersion": "1",
+  "schemaMode": "discover"
+}

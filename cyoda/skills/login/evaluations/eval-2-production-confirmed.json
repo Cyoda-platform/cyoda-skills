@@ -1,0 +1,18 @@
+{
+  "name": "production-login-confirmed",
+  "description": "User explicitly confirms production credential storage",
+  "input": {
+    "userMessage": "/cyoda:login — production environment, I accept the risk"
+  },
+  "expectedBehavior": [
+    "Shows security warning",
+    "Requires explicit 'yes'",
+    "After confirmation: collects credentials and writes token",
+    "Writes env:production to .cyoda/config",
+    "Shows prominent production reminder after success"
+  ],
+  "antiPatterns": [
+    "Skipping the warning for production",
+    "Accepting any response other than explicit 'yes'"
+  ]
+}

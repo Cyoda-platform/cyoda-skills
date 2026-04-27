@@ -1,0 +1,16 @@
+{
+  "name": "experienced-user-skips-to-build",
+  "description": "Experienced Cyoda user invokes cyoda:app but already has a design",
+  "input": {
+    "userMessage": "/cyoda:app — I already know Cyoda, just want to start building"
+  },
+  "expectedBehavior": [
+    "Notes experienced users can skip to individual skills",
+    "Points directly to /cyoda:build",
+    "Does not force through orientation or design"
+  ],
+  "antiPatterns": [
+    "Forcing the full journey on an experienced user",
+    "Giving orientation when user says they already know Cyoda"
+  ]
+}

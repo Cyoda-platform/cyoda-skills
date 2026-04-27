@@ -1,0 +1,19 @@
+{
+  "name": "add-transition-to-existing-workflow",
+  "description": "User wants to add a 'cancel' transition to an existing Order workflow",
+  "input": {
+    "userMessage": "/cyoda:build — add a cancel transition to the Order entity"
+  },
+  "expectedBehavior": [
+    "Inspects existing Order entity models",
+    "Shows current states/transitions",
+    "Asks which state 'cancel' transitions from",
+    "Generates updated workflow config",
+    "Shows diff/update for confirmation",
+    "Registers the update"
+  ],
+  "antiPatterns": [
+    "Creating a brand new entity instead of modifying",
+    "Not showing current state before proposing changes"
+  ]
+}

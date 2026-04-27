@@ -1,0 +1,4 @@
+.worktrees/
+.sandbox/
+.idea/
+.claude/settings.local.json

@@ -1,0 +1,18 @@
+{
+  "name": "cloud-connection-setup",
+  "description": "User wants to connect to Cyoda Cloud",
+  "input": {
+    "userMessage": "/cyoda:setup — I want to use Cyoda Cloud"
+  },
+  "expectedBehavior": [
+    "Asks if user has an account",
+    "Collects endpoint URL",
+    "Writes only endpoint (no token yet)",
+    "Directs user to /cyoda:login next",
+    "Gitignores .cyoda/config"
+  ],
+  "antiPatterns": [
+    "Asking for credentials during setup (that's login's job)",
+    "Completing setup without prompting for login"
+  ]
+}

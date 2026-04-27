@@ -1,0 +1,40 @@
+---
+name: status
+description: Reports current Cyoda connection status. Shows "Connected to Local cyoda-go — vX.X.X", "Connected to Cyoda Cloud — vX.X.X [PRODUCTION]", or "Not connected". Use before any operation requiring an active Cyoda instance.
+when_to_use: When the user asks about their Cyoda connection, at session start when Cyoda work is mentioned, or before build/test/migrate operations.
+allowed-tools: Bash(curl *) Bash(cat *) Bash(grep *) Bash(jq *)
+---
+
+## Cyoda Connection Status
+
+Current config:
+```!
+jq . .cyoda/config 2>/dev/null || echo '{"endpoint":"none"}'
+```
+
+Checking reachability:
+```!
+ENDPOINT=$(jq -r '.endpoint // "none"' .cyoda/config 2>/dev/null || echo "none");
+ENV=$(jq -r '.env // "development"' .cyoda/config 2>/dev/null || echo "development");
+if [ -z "$ENDPOINT" ] || [ "$ENDPOINT" = "none" ]; then
+  echo "STATUS=not_configured";
+else
+  RESULT=$(curl -sf --max-time 3 "${ENDPOINT%/}/readyz" 2>/dev/null || echo "unreachable");
+  if [ "$RESULT" = "unreachable" ]; then
+    echo "STATUS=unreachable ENDPOINT=$ENDPOINT";
+  else
+    VERSION=$(curl -sf --max-time 3 "${ENDPOINT%/}/api/v1/info" 2>/dev/null | grep -o '"version":"[^"]*"' | cut -d'"' -f4);
+    echo "STATUS=connected ENDPOINT=$ENDPOINT VERSION=${VERSION:-unknown} ENV=${ENV:-development}";
+  fi;
+fi
+```
+
+Report based on output:
+
+- `STATUS=not_configured` → **"Not connected to Cyoda — run `/cyoda:setup` to get started"**
+- `STATUS=unreachable` → **"Cyoda instance unreachable at {ENDPOINT} — is it running? Try `cyoda health`"**
+- `STATUS=connected`, `ENV=production` → **"⚠️ Connected to Cyoda Cloud [PRODUCTION] — v{VERSION}"**
+- `STATUS=connected`, endpoint contains `localhost` → **"Connected to Local cyoda-go — v{VERSION}"**
+- `STATUS=connected`, cloud endpoint → **"Connected to Cyoda Cloud — v{VERSION}"**
+
+Note: The exact health and version endpoint paths should be verified against the Cyoda OpenAPI spec at https://github.com/Cyoda-platform/cyoda-docs/blob/main/public/openapi/openapi.json.

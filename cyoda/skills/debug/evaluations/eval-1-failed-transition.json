@@ -1,0 +1,19 @@
+{
+  "name": "failed-transition-diagnosis",
+  "description": "User reports a transition is not firing as expected",
+  "input": {
+    "userMessage": "My 'approve' transition isn't firing — the entity just stays in under_review"
+  },
+  "expectedBehavior": [
+    "Asks for entity ID",
+    "Fetches current entity state",
+    "Checks if 'approve' transition is valid from under_review",
+    "Checks criteria attached to the approve transition",
+    "Checks processor logs if processor is attached",
+    "Provides specific diagnosis, not generic advice"
+  ],
+  "antiPatterns": [
+    "Generic debugging advice without checking actual entity state",
+    "Not checking criteria as a cause"
+  ]
+}

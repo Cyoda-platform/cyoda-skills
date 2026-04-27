@@ -1,0 +1,17 @@
+{
+  "name": "cli-installed-api-question",
+  "description": "User asks about the search API and cyoda CLI is installed locally",
+  "input": {
+    "userMessage": "How do I search for entities created in the last 7 days?"
+  },
+  "expectedBehavior": [
+    "Runs cyoda help to get local docs",
+    "Synthesizes a direct answer with the correct endpoint and filter syntax",
+    "Shows example curl or code snippet",
+    "Does not dump raw help output"
+  ],
+  "antiPatterns": [
+    "Pasting raw cyoda help output without synthesis",
+    "Saying 'I don't know' when local docs cover it"
+  ]
+}

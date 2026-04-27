@@ -1,0 +1,17 @@
+{
+  "name": "cli-not-installed",
+  "description": "User asks a Cyoda API question but cyoda CLI is not installed",
+  "input": {
+    "userMessage": "What's the endpoint to trigger a transition?"
+  },
+  "expectedBehavior": [
+    "Detects CLI is not installed",
+    "Asks user whether to install via /cyoda:setup or use web docs",
+    "Does not proceed without user choice",
+    "Explains why local docs are preferred"
+  ],
+  "antiPatterns": [
+    "Silently falling back to web docs without asking",
+    "Refusing to help until CLI is installed"
+  ]
+}

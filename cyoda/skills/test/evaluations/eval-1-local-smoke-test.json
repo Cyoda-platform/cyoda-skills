@@ -1,0 +1,18 @@
+{
+  "name": "local-smoke-test-automated",
+  "description": "User runs automated smoke test against local cyoda-go",
+  "input": {
+    "userMessage": "/cyoda:test"
+  },
+  "expectedBehavior": [
+    "Reads .cyoda/config for endpoint",
+    "Asks guided vs automated",
+    "In automated mode: creates entity, verifies state, triggers transition, checks new state",
+    "Reports pass/fail per test",
+    "Suggests /cyoda:debug on failure"
+  ],
+  "antiPatterns": [
+    "Running tests against production without confirmation",
+    "Not checking .cyoda/config before running"
+  ]
+}

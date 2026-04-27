@@ -1,0 +1,20 @@
+{
+  "name": "processor-implementation-guidance",
+  "description": "User needs to implement a processor that enriches entity data by calling an external API",
+  "input": {
+    "userMessage": "I need to implement a processor that calls our pricing API when an order transitions to submitted"
+  },
+  "expectedBehavior": [
+    "Explains the gRPC connection lifecycle",
+    "Shows how to register with the right tags",
+    "Provides processor request/response pattern",
+    "Notes idempotency requirement via requestId",
+    "Mentions 60s timeout and suggests async for slow operations",
+    "Points to grpc-patterns.md and processor.md examples"
+  ],
+  "antiPatterns": [
+    "Providing language-specific code (skill is language-agnostic)",
+    "Framing compute node as required when it's optional",
+    "Omitting idempotency guidance"
+  ]
+}

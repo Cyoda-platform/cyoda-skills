@@ -1,0 +1,20 @@
+{
+  "name": "full-local-to-cloud-migration",
+  "description": "User has working local cyoda-go app and wants to move to Cyoda Cloud",
+  "input": {
+    "userMessage": "/cyoda:migrate"
+  },
+  "expectedBehavior": [
+    "Verifies local instance is running",
+    "Exports all entity models and workflows to migration/ directory",
+    "Invokes cyoda:setup (cloud mode) then cyoda:login",
+    "Imports each workflow to cloud",
+    "Runs /cyoda:test against cloud",
+    "Instructs user to update app config"
+  ],
+  "antiPatterns": [
+    "Migrating without verifying local instance first",
+    "Skipping /cyoda:test after import",
+    "Not exporting before switching .cyoda/config to cloud"
+  ]
+}

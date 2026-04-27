@@ -1,0 +1,16 @@
+{
+  "name": "transition-state-verification",
+  "description": "User wants to verify their workflow transitions work correctly",
+  "input": {
+    "userMessage": "/cyoda:test — guided mode, Order entity with submit transition"
+  },
+  "expectedBehavior": [
+    "Generates populated smoke-test.sh with ENTITY_NAME=order, TRANSITION_NAME=submit",
+    "Shows complete script with no placeholders remaining",
+    "Provides chmod and run instructions"
+  ],
+  "antiPatterns": [
+    "Leaving ${ENTITY_NAME} placeholders in the generated script",
+    "Running tests automatically in guided mode"
+  ]
+}
