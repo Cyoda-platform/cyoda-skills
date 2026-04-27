@@ -74,6 +74,89 @@ cyoda/
 
 ---
 
+## Eval Format Standard
+
+> **All eval files use this format.** The per-task eval blocks below were written before the official Anthropic skill-creator format was adopted — treat them as content reference only. The canonical schema is here.
+
+Each skill's evaluations live in a single file per skill: `evaluations/evals.json`.
+
+```json
+{
+  "skill_name": "<skill-name>",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The user message that triggers the skill",
+      "expected_output": "One-sentence description of the correct response",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "assertion-id", "text": "Objectively verifiable check", "type": "behavior" },
+        { "id": "assertion-id-2", "text": "Does NOT do X", "type": "behavior" },
+        { "id": "assertion-id-3", "text": "Output includes Y", "type": "format" }
+      ]
+    }
+  ]
+}
+```
+
+**Field guide:**
+- `files` — filesystem state to mock before running the eval. Use this to provide `.cyoda/config`, stub responses, or any file the skill reads at invocation. Solves the "needs a running instance" problem for most evals.
+- `assertions[].type` — use `behavior` for what the skill does/avoids, `format` for output structure. Subjective quality checks should be `expected_output` prose, not forced assertions.
+- `antiPatterns` from the old format become negative `behavior` assertions phrased as "Does NOT…".
+- Cover: happy path (id=1), edge case (id=2), failure/guard scenario (id=3).
+
+**Example — `cyoda:status` skill:**
+
+```json
+{
+  "skill_name": "status",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "What's my Cyoda status?",
+      "expected_output": "Reports 'Connected to Local cyoda-go — vX.X.X' without a PRODUCTION marker",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+      },
+      "assertions": [
+        { "id": "reads-config", "text": "Reads .cyoda/config for endpoint", "type": "behavior" },
+        { "id": "calls-health", "text": "Calls health endpoint on localhost", "type": "behavior" },
+        { "id": "reports-version", "text": "Reports version number in output", "type": "format" },
+        { "id": "no-production-marker", "text": "Does NOT show PRODUCTION warning", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Check my connection",
+      "expected_output": "Reports connection with prominent PRODUCTION marker and version",
+      "files": {
+        ".cyoda/config": "CYODA_ENDPOINT=https://api.eu.cyoda.net\nCYODA_ENV=production\nCYODA_TOKEN=eyJ..."
+      },
+      "assertions": [
+        { "id": "reads-env", "text": "Reads CYODA_ENV=production from config", "type": "behavior" },
+        { "id": "production-marker", "text": "Shows PRODUCTION marker prominently", "type": "format" },
+        { "id": "includes-version", "text": "Includes version number", "type": "format" }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Am I connected to Cyoda?",
+      "expected_output": "Reports not connected and directs user to run /cyoda:setup",
+      "files": {},
+      "assertions": [
+        { "id": "detects-missing-config", "text": "Detects missing .cyoda/config", "type": "behavior" },
+        { "id": "reports-not-connected", "text": "Reports 'Not connected'", "type": "format" },
+        { "id": "suggests-setup", "text": "Directs user to run /cyoda:setup", "type": "behavior" }
+      ]
+    }
+  ]
+}
+```
+
+---
+
 ## Task 1: Plugin Scaffold
 
 **Files:**
@@ -2422,15 +2505,61 @@ git commit -m "feat: add cyoda:app newcomer orchestrator skill"
 
 ---
 
-## Task 14: Final Verification
+## Task 14: Eval Suite
 
-- [ ] **Step 1: Load the plugin and verify all skills appear**
+**Goal:** Verify all 11 skills behave correctly against their eval assertions. Uses the Anthropic skill-creator parallel Executor + Grader pipeline — no running Cyoda instance required for most evals (environment is mocked via `files[]`).
+
+- [ ] **Step 1: Confirm eval files use the canonical format**
+
+All `evaluations/evals.json` files must follow the [Eval Format Standard](#eval-format-standard) above. If any skill still has the old per-file format (`expectedBehavior` / `antiPatterns`), migrate it first.
+
+- [ ] **Step 2: Run evals — parallel Executor + Grader per skill**
+
+For each of the 11 skills, spawn two parallel subagents:
+
+**Executor** — receives:
+- The skill's `SKILL.md` content
+- The eval's `prompt` as the user message
+- The eval's `files` as mock filesystem state
+
+Saves full skill output to `eval-workspace/<skill>/eval-<id>/output.md`.
+
+**Grader** — receives:
+- `output.md` from the Executor
+- The eval's `assertions[]` and `expected_output`
+
+For each assertion, records `{ "id": "...", "passed": true|false, "evidence": "..." }`.
+Saves to `eval-workspace/<skill>/eval-<id>/grades.json`.
+
+Run all 11 skills in parallel. Within each skill, run all evals in parallel.
+
+- [ ] **Step 3: Collect and review results**
+
+Aggregate all `grades.json` files into a summary table:
+
+| Skill | Eval | Assertion | Passed | Evidence |
+|-------|------|-----------|--------|----------|
+| status | 1 | reads-config | ✓ | Calls `cat .cyoda/config` |
+| status | 1 | no-production-marker | ✓ | No ⚠️ in output |
+| build | 3 | production-guard | ✗ | Registered without waiting for 'confirm' |
+| ... | | | | |
+
+Flag every `passed: false` for immediate fix.
+
+- [ ] **Step 4: Iterate on failures**
+
+For each failing assertion:
+1. Is the expected behavior clearly specified in `SKILL.md`? If not — update `SKILL.md`, re-run.
+2. Is `SKILL.md` correct but the assertion wrong? Update the assertion, re-run.
+3. Re-run only the affected skill's evals after each fix.
+
+- [ ] **Step 5: Smoke-check plugin loading**
 
 ```bash
 claude --plugin-dir ./cyoda
 ```
 
-In the session, run:
+In the session:
 ```
 /help
 ```
@@ -2438,30 +2567,9 @@ In the session, run:
 Expected: all 11 skills appear under the `cyoda` namespace:
 `cyoda:status`, `cyoda:docs`, `cyoda:setup`, `cyoda:login`, `cyoda:design`, `cyoda:build`, `cyoda:compute`, `cyoda:test`, `cyoda:debug`, `cyoda:migrate`, `cyoda:app`
 
-- [ ] **Step 2: Spot-check auto-invocation**
-
-Ask a Cyoda question without invoking a skill:
-```
-How do I trigger a transition in Cyoda?
-```
-
-Expected: Claude auto-invokes `cyoda:docs` and synthesizes an answer.
-
-- [ ] **Step 3: Spot-check status skill**
-
-```
-/cyoda:status
-```
-
-Expected: reports connection state based on `.cyoda/config` (or "not connected" if no config).
-
-- [ ] **Step 4: Verify gitignore behavior**
-
-Run `/cyoda:setup` (local) and confirm `.cyoda/config` is added to `.gitignore` automatically.
-
-- [ ] **Step 5: Final commit**
+- [ ] **Step 6: Final commit**
 
 ```bash
 git add cyoda/
-git commit -m "feat: complete cyoda plugin — 11 skills, monitor, scaffold"
+git commit -m "feat: complete cyoda plugin — 11 skills, monitor, scaffold, eval suite passing"
 ```
