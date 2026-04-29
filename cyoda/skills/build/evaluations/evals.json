@@ -48,5 +48,19 @@
         { "id": "no-full-block", "text": "Does NOT block the entire build loop — only adds the confirmation step", "type": "behavior" }
       ]
     }
+    ,{
+      "id": 4,
+      "prompt": "/cyoda:build — register a new ChatRoom entity with a simple workflow",
+      "expected_output": "Runs cyoda help models and cyoda help workflows before issuing any registration curl commands, derives the correct sequence, and executes without 404 errors",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
+      },
+      "assertions": [
+        { "id": "consults-cyoda-help-first", "text": "Runs cyoda help models and cyoda help workflows before issuing any POST registration commands", "type": "behavior" },
+        { "id": "no-pre-help-curl", "text": "Does NOT issue any curl POST commands before consulting cyoda help", "type": "behavior" },
+        { "id": "correct-sequence", "text": "Executes registration in the correct sequence derived from cyoda help: create model, import workflow", "type": "behavior" },
+        { "id": "no-404-retry-loop", "text": "Does NOT retry failed endpoints — derives correct endpoint from cyoda help before first attempt", "type": "behavior" }
+      ]
+    }
   ]
 }

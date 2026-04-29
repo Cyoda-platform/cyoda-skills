@@ -2615,3 +2615,9 @@ Identified from real user session (`_developer/conversation.md`). All changes ap
 **Problem:** No guidance on how to create M2M credentials through AI Studio.
 
 **Fix:** Both skills now explain that AI Studio at `https://ai.cyoda.net/` accepts conversational prompts for credential management ("create a technical user"). Also covers the post-redeploy case where credentials may need to be recreated.
+
+### 7. Proactive `cyoda help` lookup in `cyoda:build` Step 4
+
+**Problem:** Step 4 showed a hardcoded curl example for workflow import without first establishing the entity model. Claude attempted the wrong sequence, received 404s, and only consulted `cyoda help` after failure.
+
+**Fix:** Step 4 now runs `cyoda help models` + `cyoda help workflows` as a mandatory first sub-step before issuing any curl commands. The skill retains conceptual descriptions (create model → import workflow → lock) but no hardcoded endpoint paths. `Bash(cyoda *)` added to `allowed-tools`. Eval #4 added asserting docs are consulted before any POST.

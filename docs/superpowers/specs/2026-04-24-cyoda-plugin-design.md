@@ -140,11 +140,11 @@ Incremental build loop — supports both new additions and modifications to exis
 1. **Inspect**: query the running Cyoda instance (`GET /api/model/*`) to show what already exists. If no instance is reachable, prompt the user to run `cyoda:setup` first.
 2. **Brainstorm**: ask what to add or change next — one increment at a time (new entity, new state, new transition, schema lock, etc.)
 3. **Clarify**: show the proposed JSON config, confirm with user before registering
-4. **Register**: POST/PUT to Cyoda REST API to apply the change
+4. **Register**: run `cyoda help models` + `cyoda help workflows` first to derive the correct API sequence (create model → import workflow → lock), then execute. The skill carries only conceptual descriptions of each sub-step — exact endpoints come from `cyoda help` at runtime. Requires `Bash(cyoda *)` in `allowed-tools`.
 5. **Verify**: prompt to run `cyoda:test`, show the current entity/workflow state
 6. **Loop**: back to step 2 for the next increment
 
-Requires `allowed-tools: Bash` for REST API calls against the running Cyoda instance.
+Requires `allowed-tools: Bash(curl *)` for REST API calls and `Bash(cyoda *)` to run `cyoda help` in Step 4.
 
 Handles the full lifecycle: create → evolve → lock. This also covers the hello world / quickstart path — the user starts the loop and the first increment is simply the minimal entity + workflow.
 
@@ -288,6 +288,7 @@ Skills read this file via dynamic context injection at invocation time using `jq
 
 No Cyoda documentation is embedded in skill bodies. Instead:
 - `cyoda:docs` fetches docs dynamically (local CLI preferred, web fallback)
+- `cyoda:build` runs `cyoda help` directly in Step 4 — proactively before any curl, not as fallback
 - Other skills delegate to `cyoda:docs` for API details
 - Skills reference supporting files in their directory for examples and templates
 
