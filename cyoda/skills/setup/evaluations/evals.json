@@ -20,12 +20,12 @@
     {
       "id": 2,
       "prompt": "/cyoda:setup — I want to use Cyoda Cloud",
-      "expected_output": "Asks if user has an account, collects endpoint URL, writes only CYODA_ENDPOINT to .cyoda/config, gitignores it, directs to /cyoda:login next",
+      "expected_output": "Asks if user has an account, collects endpoint URL, writes only endpoint field to .cyoda/config as JSON, gitignores it, directs to /cyoda:login next",
       "files": {},
       "assertions": [
         { "id": "asks-account", "text": "Asks if user has a Cyoda Cloud account", "type": "behavior" },
         { "id": "collects-endpoint", "text": "Collects endpoint URL from user", "type": "behavior" },
-        { "id": "writes-endpoint-only", "text": "Writes only CYODA_ENDPOINT to .cyoda/config — no token yet", "type": "behavior" },
+        { "id": "writes-endpoint-only", "text": "Writes only endpoint field to .cyoda/config as JSON — no token yet", "type": "behavior" },
         { "id": "directs-to-login", "text": "Directs user to run /cyoda:login next", "type": "behavior" },
         { "id": "gitignores-config", "text": "Gitignores .cyoda/config", "type": "behavior" },
         { "id": "no-credentials-in-setup", "text": "Does NOT ask for credentials — that is login's job", "type": "behavior" }
@@ -36,7 +36,7 @@
       "prompt": "/cyoda:setup",
       "expected_output": "Detects existing installation, skips brew install, verifies health, updates .cyoda/config if needed, reports already ready",
       "files": {
-        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
       "assertions": [
         { "id": "detects-existing", "text": "Detects cyoda is already installed", "type": "behavior" },

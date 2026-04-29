@@ -1,5 +1,14 @@
 {
   "enabledPlugins": {
-    "superpowers@claude-plugins-official": true
+    "superpowers@claude-plugins-official": true,
+    "example-skills@anthropics-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "anthropics-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    }
   }
 }

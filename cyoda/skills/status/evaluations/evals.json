@@ -6,7 +6,7 @@
       "prompt": "What's my Cyoda status?",
       "expected_output": "Reports 'Connected to Local cyoda-go — vX.X.X' without a PRODUCTION marker",
       "files": {
-        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
       "assertions": [
         { "id": "reads-config", "text": "Reads .cyoda/config for endpoint", "type": "behavior" },
@@ -20,10 +20,10 @@
       "prompt": "Check my connection",
       "expected_output": "Reports connection with prominent PRODUCTION marker and version number",
       "files": {
-        ".cyoda/config": "CYODA_ENDPOINT=https://api.eu.cyoda.net\nCYODA_ENV=production\nCYODA_TOKEN=eyJfake..."
+        ".cyoda/config": "{\"endpoint\": \"https://api.eu.cyoda.net\", \"env\": \"production\", \"token\": \"eyJfake...\"}"
       },
       "assertions": [
-        { "id": "reads-env-production", "text": "Reads CYODA_ENV=production from config", "type": "behavior" },
+        { "id": "reads-env-production", "text": "Reads env=production from config", "type": "behavior" },
         { "id": "shows-production-marker", "text": "Shows PRODUCTION marker prominently in output", "type": "format" },
         { "id": "includes-version", "text": "Includes version number in output", "type": "format" }
       ]

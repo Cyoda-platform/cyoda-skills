@@ -6,7 +6,7 @@
       "prompt": "/cyoda:build — add an Order entity with draft and submitted states",
       "expected_output": "Reads config, inspects existing models, asks clarifying questions, generates workflow JSON, shows it for confirmation, registers via POST, reports success and suggests /cyoda:test",
       "files": {
-        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
       "assertions": [
         { "id": "reads-config", "text": "Reads .cyoda/config for endpoint", "type": "behavior" },
@@ -23,7 +23,7 @@
       "prompt": "/cyoda:build — add a cancel transition to the Order entity",
       "expected_output": "Inspects existing Order entity, shows current states/transitions, asks which state 'cancel' transitions from, generates updated config, shows for confirmation, registers",
       "files": {
-        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
       "assertions": [
         { "id": "inspects-existing", "text": "Inspects existing Order entity models", "type": "behavior" },
@@ -38,7 +38,7 @@
       "prompt": "/cyoda:build — add approval state to RiskAssessment",
       "expected_output": "Shows PRODUCTION warning at start, generates config normally, requires explicit 'confirm' before registering — does not block the full build loop",
       "files": {
-        ".cyoda/config": "CYODA_ENDPOINT=https://api.eu.cyoda.net\nCYODA_ENV=production\nCYODA_TOKEN=eyJfake..."
+        ".cyoda/config": "{\"endpoint\": \"https://api.eu.cyoda.net\", \"env\": \"production\", \"token\": \"eyJfake...\"}"
       },
       "assertions": [
         { "id": "shows-production-warning", "text": "Shows PRODUCTION warning at the start of the skill", "type": "behavior" },

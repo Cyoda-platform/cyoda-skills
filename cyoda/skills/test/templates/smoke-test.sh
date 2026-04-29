@@ -2,8 +2,9 @@
 # Cyoda smoke test — edit ENTITY_NAME, MODEL_VERSION, and TRANSITION_NAME
 set -euo pipefail
 
-ENDPOINT="${CYODA_ENDPOINT:-http://localhost:8080}"
-TOKEN="${CYODA_TOKEN:-}"
+CONFIG_FILE="${CYODA_CONFIG:-.cyoda/config}"
+ENDPOINT="${CYODA_ENDPOINT:-$(jq -r '.endpoint // "http://localhost:8080"' "$CONFIG_FILE" 2>/dev/null || echo "http://localhost:8080")}"
+TOKEN="${CYODA_TOKEN:-$(jq -r '.token // ""' "$CONFIG_FILE" 2>/dev/null || echo "")}"
 AUTH_HEADER=$([ -n "$TOKEN" ] && echo "-H 'Authorization: Bearer $TOKEN'" || echo "")
 ENTITY_NAME="${ENTITY_NAME:-my-entity}"
 MODEL_VERSION="${MODEL_VERSION:-1}"

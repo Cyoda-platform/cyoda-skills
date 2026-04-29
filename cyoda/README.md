@@ -22,10 +22,12 @@ Helps you build applications on [Cyoda](https://cyoda-docs-feature-cyoda-go-init
 
 Skills share connection state via `.cyoda/config` (always gitignored):
 
-```
-CYODA_ENDPOINT=http://localhost:8080
-CYODA_TOKEN=eyJ...
-CYODA_ENV=development
+```json
+{
+  "endpoint": "http://localhost:8080",
+  "token": "eyJ...",
+  "env": "development"
+}
 ```
 
 Run `/cyoda:setup` then `/cyoda:login` to populate this file.

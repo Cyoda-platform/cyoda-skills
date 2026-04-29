@@ -6,7 +6,7 @@
       "prompt": "/cyoda:test",
       "expected_output": "Reads .cyoda/config, asks guided vs automated, in automated mode runs entity creation/transition/state verification sequence and reports pass/fail per test, suggests /cyoda:debug on failure",
       "files": {
-        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
       "assertions": [
         { "id": "reads-config", "text": "Reads .cyoda/config for endpoint before running", "type": "behavior" },
@@ -22,7 +22,7 @@
       "prompt": "/cyoda:test — guided mode, Order entity with submit transition",
       "expected_output": "Generates a fully populated smoke-test.sh with ENTITY_NAME=order and TRANSITION_NAME=submit — no placeholders remaining — with chmod and run instructions",
       "files": {
-        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
       "assertions": [
         { "id": "generates-script", "text": "Generates populated smoke-test.sh from template", "type": "behavior" },
@@ -38,7 +38,7 @@
       "prompt": "/cyoda:test — I want to check that point-in-time queries work",
       "expected_output": "Runs transition test first to create history, then queries entity at a timestamp before the transition, verifies historical state matches pre-transition state",
       "files": {
-        ".cyoda/config": "CYODA_ENDPOINT=http://localhost:8080\nCYODA_ENV=development"
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
       "assertions": [
         { "id": "creates-history-first", "text": "Runs the transition test first to create entity history", "type": "behavior" },
