@@ -9,4 +9,3 @@
 cyoda/skills/*-workspace/
 # Cyoda connection config — contains credentials, always local-only
 .cyoda/
-.cyoda/config
