@@ -7,3 +7,6 @@
 # grading output, benchmark JSON, and HTML review files. Regenerate with the
 # skill-creator eval pipeline; do not commit.
 cyoda/skills/*-workspace/
+# Cyoda connection config — contains credentials, always local-only
+.cyoda/
+.cyoda/config
