@@ -19,11 +19,10 @@ ENV=$(jq -r '.env // "development"' .cyoda/config 2>/dev/null || echo "developme
 if [ -z "$ENDPOINT" ] || [ "$ENDPOINT" = "none" ]; then
   echo "STATUS=not_configured";
 else
-  HELP=$(curl -sf --max-time 3 "${ENDPOINT%/}/api/help" 2>/dev/null);
-  if [ -z "$HELP" ]; then
+  VERSION=$(curl -sf --max-time 3 "${ENDPOINT%/}/api/help" 2>/dev/null | jq -r '.version // ""' 2>/dev/null);
+  if [ -z "$VERSION" ]; then
     echo "STATUS=unreachable ENDPOINT=$ENDPOINT";
   else
-    VERSION=$(echo "$HELP" | jq -r '.version // "unknown"');
     echo "STATUS=connected ENDPOINT=$ENDPOINT VERSION=$VERSION ENV=${ENV:-development}";
   fi;
 fi
