@@ -20,15 +20,18 @@
     {
       "id": 2,
       "prompt": "/cyoda:setup — I want to use Cyoda Cloud",
-      "expected_output": "Asks if user has an account, collects endpoint URL, writes only endpoint field to .cyoda/config as JSON, gitignores it, directs to /cyoda:login next",
+      "expected_output": "Directs user to Cyoda AI Studio at https://ai.cyoda.net/ to create or list environments, collects endpoint URL in the correct format (client-<hash>-<env>.eu.cyoda.net), writes only endpoint field to .cyoda/config as JSON, gitignores it, directs to /cyoda:login next",
       "files": {},
       "assertions": [
-        { "id": "asks-account", "text": "Asks if user has a Cyoda Cloud account", "type": "behavior" },
+        { "id": "directs-to-ai-studio", "text": "Directs user to Cyoda AI Studio at https://ai.cyoda.net/ for account/environment management", "type": "behavior" },
+        { "id": "mentions-create-or-list", "text": "Mentions that the user can ask AI Studio to create, list, or redeploy environments", "type": "behavior" },
         { "id": "collects-endpoint", "text": "Collects endpoint URL from user", "type": "behavior" },
+        { "id": "correct-endpoint-format", "text": "Uses correct endpoint format example (client-<hash>-<env>.eu.cyoda.net, not api.eu.cyoda.net)", "type": "format" },
         { "id": "writes-endpoint-only", "text": "Writes only endpoint field to .cyoda/config as JSON — no token yet", "type": "behavior" },
         { "id": "directs-to-login", "text": "Directs user to run /cyoda:login next", "type": "behavior" },
         { "id": "gitignores-config", "text": "Gitignores .cyoda/config", "type": "behavior" },
-        { "id": "no-credentials-in-setup", "text": "Does NOT ask for credentials — that is login's job", "type": "behavior" }
+        { "id": "no-credentials-in-setup", "text": "Does NOT ask for credentials — that is login's job", "type": "behavior" },
+        { "id": "no-docs-signup-url", "text": "Does NOT direct user to docs.cyoda.net for sign-up", "type": "behavior" }
       ]
     },
     {

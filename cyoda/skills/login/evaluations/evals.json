@@ -4,12 +4,15 @@
     {
       "id": 1,
       "prompt": "/cyoda:login",
-      "expected_output": "Asks dev vs production, collects client_id and client_secret separately, calls OAuth token endpoint, writes token and env=development as JSON fields to .cyoda/config, confirms success without production warning",
+      "expected_output": "Asks dev vs production, explains M2M credentials and directs to AI Studio if user doesn't have them, collects client_id and client_secret separately, calls OAuth token endpoint, writes token and env=development as JSON fields to .cyoda/config, confirms success without production warning",
       "files": {
-        ".cyoda/config": "{\"endpoint\": \"https://dev.cyoda.net\"}"
+        ".cyoda/config": "{\"endpoint\": \"https://client-1edf4e3da14e497baf58d3aeb621ac40-dev.eu.cyoda.net\"}"
       },
       "assertions": [
         { "id": "asks-env-type", "text": "Asks whether this is development or production environment", "type": "behavior" },
+        { "id": "explains-m2m", "text": "Explains that client_id/client_secret are machine-to-machine credentials identifying the application, not a personal login", "type": "behavior" },
+        { "id": "asks-if-have-credentials", "text": "Asks whether user already has client_id and client_secret before collecting", "type": "behavior" },
+        { "id": "directs-to-ai-studio", "text": "Directs user without credentials to Cyoda AI Studio at https://ai.cyoda.net/ to create a technical user", "type": "behavior" },
         { "id": "collects-credentials", "text": "Collects client_id and client_secret separately, one at a time", "type": "behavior" },
         { "id": "calls-token-endpoint", "text": "Calls OAuth token endpoint", "type": "behavior" },
         { "id": "writes-token", "text": "Writes token and env=development as JSON fields to .cyoda/config", "type": "behavior" },
@@ -20,13 +23,14 @@
     {
       "id": 2,
       "prompt": "/cyoda:login — production environment, I accept the risk",
-      "expected_output": "Shows security warning, requires explicit 'yes', collects credentials, writes token and env=production as JSON fields to .cyoda/config, shows prominent production reminder",
+      "expected_output": "Shows security warning, requires explicit 'yes', explains M2M credentials, collects credentials, writes token and env=production as JSON fields to .cyoda/config, shows prominent production reminder",
       "files": {
-        ".cyoda/config": "{\"endpoint\": \"https://api.eu.cyoda.net\"}"
+        ".cyoda/config": "{\"endpoint\": \"https://client-1edf4e3da14e497baf58d3aeb621ac40-prod.eu.cyoda.net\"}"
       },
       "assertions": [
         { "id": "shows-security-warning", "text": "Shows security warning about storing production credentials on disk", "type": "behavior" },
         { "id": "requires-explicit-yes", "text": "Requires explicit 'yes' — not any other response", "type": "behavior" },
+        { "id": "explains-m2m", "text": "Explains that client_id/client_secret are M2M credentials for the application", "type": "behavior" },
         { "id": "writes-production-env", "text": "Writes env=production as a JSON field to .cyoda/config after confirmation", "type": "behavior" },
         { "id": "production-reminder", "text": "Shows prominent production reminder after successful login", "type": "format" }
       ]
@@ -36,13 +40,26 @@
       "prompt": "/cyoda:login — production, but I'm not sure about storing credentials",
       "expected_output": "Shows security warning, stops when user does not answer 'yes', does not write any credentials, suggests alternatives",
       "files": {
-        ".cyoda/config": "{\"endpoint\": \"https://api.eu.cyoda.net\"}"
+        ".cyoda/config": "{\"endpoint\": \"https://client-1edf4e3da14e497baf58d3aeb621ac40-prod.eu.cyoda.net\"}"
       },
       "assertions": [
         { "id": "shows-warning", "text": "Shows security warning before proceeding", "type": "behavior" },
         { "id": "stops-on-non-yes", "text": "Stops when user response is not explicit 'yes'", "type": "behavior" },
         { "id": "no-credentials-written", "text": "Does NOT write any credentials after a non-yes response", "type": "behavior" },
         { "id": "suggests-alternatives", "text": "Suggests alternatives such as env vars or cyoda CLI", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/cyoda:login — my login stopped working after the environment was redeployed",
+      "expected_output": "Recognises the post-redeploy scenario, notes that technical users may be deleted on redeploy, directs user to recreate the technical user in AI Studio before retrying",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"https://client-1edf4e3da14e497baf58d3aeb621ac40-dev.eu.cyoda.net\"}"
+      },
+      "assertions": [
+        { "id": "recognises-redeploy", "text": "Recognises the post-redeploy scenario as cause of credential failure", "type": "behavior" },
+        { "id": "notes-users-deleted", "text": "Notes that technical users may be deleted when an environment is redeployed", "type": "behavior" },
+        { "id": "directs-to-recreate", "text": "Directs user to recreate the technical user in Cyoda AI Studio at https://ai.cyoda.net/", "type": "behavior" }
       ]
     }
   ]

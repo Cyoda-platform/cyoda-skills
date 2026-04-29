@@ -4,19 +4,21 @@
     {
       "id": 1,
       "prompt": "/cyoda:migrate",
-      "expected_output": "Verifies local instance is running, exports all entity models/workflows to migration/ directory, invokes setup+login for cloud, imports each workflow, runs /cyoda:test against cloud, instructs user to update app config",
+      "expected_output": "Verifies local instance is running, exports all entity models/workflows AND JSON schemas to migration/ directory, invokes setup+login for cloud, imports each workflow, runs /cyoda:test against cloud, instructs user to update app config",
       "files": {
         ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
       "assertions": [
         { "id": "verifies-local", "text": "Verifies local cyoda-go instance is running before doing anything", "type": "behavior" },
-        { "id": "exports-models", "text": "Exports all entity models and workflows to migration/ directory", "type": "behavior" },
+        { "id": "exports-workflows", "text": "Exports all entity workflows to migration/ directory", "type": "behavior" },
+        { "id": "exports-schemas", "text": "Exports JSON Schema (field definitions) for each entity via /api/model/export/JSON_SCHEMA/{entity}/{version}", "type": "behavior" },
+        { "id": "confirms-export-complete", "text": "Confirms both schema and workflow files exist for each entity before proceeding", "type": "behavior" },
         { "id": "invokes-setup-login", "text": "Invokes /cyoda:setup (cloud mode) then /cyoda:login", "type": "behavior" },
         { "id": "imports-to-cloud", "text": "Imports each workflow to cloud", "type": "behavior" },
         { "id": "runs-test-on-cloud", "text": "Runs /cyoda:test against cloud after import", "type": "behavior" },
         { "id": "instructs-config-update", "text": "Instructs user to update app config to point to cloud", "type": "behavior" },
         { "id": "no-migrate-without-verify", "text": "Does NOT attempt export without first verifying local instance", "type": "behavior" },
-        { "id": "no-skip-test", "text": "Does NOT skip /cyoda:test after import", "type": "behavior" }
+        { "id": "no-skip-schema-export", "text": "Does NOT skip schema export — only exporting workflow is insufficient", "type": "behavior" }
       ]
     },
     {

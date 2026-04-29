@@ -20,7 +20,11 @@ Key ideas:
 - The same API works locally (cyoda-go) and on Cyoda Cloud — move between them with no code changes
 - Compute nodes are **optional** — many workflows need no external processors at all
 
-If you're already familiar with Cyoda, skip ahead: `/cyoda:design`, `/cyoda:build`, `/cyoda:setup`, etc.
+**Already familiar with Cyoda?** Ask: "Do you already have a domain design, or do you need to go through the design process?"
+- If they **have a design**: skip to Step 2 (instance setup), then Step 3 (build).
+- If they **need to design**: continue to Step 1.
+
+Otherwise, continue below for the full guided journey.
 
 ---
 
@@ -36,10 +40,14 @@ Invoke `/cyoda:design` — describe your application and I'll guide you through 
 
 ### Step 2 — Set up your Cyoda instance
 
-Will you develop locally with cyoda-go, or connect straight to Cyoda Cloud?
+First, let me check if you already have a Cyoda instance configured.
 
-- **Local (recommended for development):** Run `/cyoda:setup` → choose local
-- **Cloud:** Run `/cyoda:setup` → choose cloud, then `/cyoda:login`
+Invoke `/cyoda:status`.
+
+- If **already connected**: confirm with the user whether to use that environment and skip to Step 3.
+- If **not connected**: ask — "Will you develop locally with cyoda-go, or connect to Cyoda Cloud?"
+  - **Local (recommended for development):** Run `/cyoda:setup` → choose local
+  - **Cloud:** Run `/cyoda:setup` → choose cloud, then `/cyoda:login`
 
 *(After setup is complete, run `/cyoda:status` to confirm connection.)*
 

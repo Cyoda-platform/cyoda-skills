@@ -30,7 +30,7 @@ If unreachable: *"Start local cyoda-go first (`cyoda`), then re-run this skill."
 
 Suggest running `/cyoda:test` against local before migrating to confirm everything works.
 
-### Step 2 — Export entity models and workflows
+### Step 2 — Export entity models, schemas, and workflows
 
 ```bash
 mkdir -p migration
@@ -40,12 +40,18 @@ ENDPOINT=$(jq -r '.endpoint' .cyoda/config)
 MODELS=$(curl -sf "${ENDPOINT}/api/model")
 echo "$MODELS" | tee migration/models.json
 
-# For each model, export workflow (run for each entity name and version)
+# For each model, export both schema AND workflow (run for each entity name and version)
+
+# Export JSON Schema (field definitions)
+curl -sf "${ENDPOINT}/api/model/export/JSON_SCHEMA/${ENTITY_NAME}/${MODEL_VERSION}" \
+  | tee migration/${ENTITY_NAME}_${MODEL_VERSION}_schema.json
+
+# Export workflow (states, transitions, criteria, processors)
 curl -sf "${ENDPOINT}/api/model/${ENTITY_NAME}/${MODEL_VERSION}/workflow" \
   | tee migration/${ENTITY_NAME}_${MODEL_VERSION}_workflow.json
 ```
 
-Show the user what was exported.
+Show the user what was exported — confirm both schema and workflow files exist for each entity before proceeding.
 
 ### Step 3 — Set up Cyoda Cloud
 

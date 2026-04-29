@@ -4,12 +4,13 @@
     {
       "id": 1,
       "prompt": "/cyoda:app I want to build a task management app",
-      "expected_output": "Gives brief Cyoda orientation, directs to /cyoda:design, then guides step-by-step through setup → build → test → migrate journey",
+      "expected_output": "Gives brief Cyoda orientation, directs to /cyoda:design, then in Step 2 invokes /cyoda:status before asking local vs cloud — if not connected asks local or cloud, guides through setup → build → test → migrate journey",
       "files": {},
       "assertions": [
         { "id": "gives-orientation", "text": "Gives brief Cyoda orientation for newcomer", "type": "behavior" },
         { "id": "directs-to-design", "text": "Directs user to /cyoda:design for domain brainstorm", "type": "behavior" },
-        { "id": "guides-to-setup", "text": "After design, guides to /cyoda:setup", "type": "behavior" },
+        { "id": "checks-status-first", "text": "Invokes /cyoda:status before asking about local vs cloud setup", "type": "behavior" },
+        { "id": "guides-to-setup", "text": "After design, guides to /cyoda:setup when not already connected", "type": "behavior" },
         { "id": "guides-to-build", "text": "After setup, guides to /cyoda:build", "type": "behavior" },
         { "id": "guides-to-test", "text": "After build, guides to /cyoda:test", "type": "behavior" },
         { "id": "offers-migrate", "text": "Offers /cyoda:migrate when ready for cloud", "type": "behavior" },
@@ -31,13 +32,27 @@
     {
       "id": 3,
       "prompt": "/cyoda:app — I want to use Cyoda Cloud, not install anything locally",
-      "expected_output": "Accepts cloud-first approach, guides to /cyoda:setup (cloud mode) then /cyoda:login, does not insist on local installation",
+      "expected_output": "Invokes /cyoda:status first; since not connected, accepts cloud-first approach, guides to /cyoda:setup (cloud mode) then /cyoda:login, does not insist on local installation",
       "files": {},
       "assertions": [
+        { "id": "checks-status-first", "text": "Invokes /cyoda:status before asking about setup mode", "type": "behavior" },
         { "id": "accepts-cloud-first", "text": "Accepts cloud-first approach without pushback", "type": "behavior" },
         { "id": "guides-to-cloud-setup", "text": "Guides to /cyoda:setup in cloud mode", "type": "behavior" },
         { "id": "guides-to-login", "text": "Guides to /cyoda:login for authentication", "type": "behavior" },
         { "id": "no-local-insistence", "text": "Does NOT insist on local cyoda-go installation", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/cyoda:app I want to build a chat app",
+      "expected_output": "In Step 2 invokes /cyoda:status, finds instance already configured, confirms with user whether to use it, and skips setup entirely",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
+      },
+      "assertions": [
+        { "id": "checks-status-first", "text": "Invokes /cyoda:status at the start of Step 2", "type": "behavior" },
+        { "id": "confirms-existing", "text": "Confirms with user whether to use the already-configured instance", "type": "behavior" },
+        { "id": "skips-setup", "text": "Does NOT ask local vs cloud or run /cyoda:setup when already connected", "type": "behavior" }
       ]
     }
   ]

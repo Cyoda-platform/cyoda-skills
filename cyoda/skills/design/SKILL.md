@@ -8,7 +8,9 @@ when_to_use: When the user describes an application they want to build on Cyoda,
 
 ### Phase 1 — Orientation (skip if user is already familiar with Cyoda)
 
-Assess whether the user needs orientation: if they haven't described Cyoda concepts (entities, workflows, transitions) in their message, give a brief orientation first.
+Assess whether the user needs orientation. **Skip orientation if the user's message contains any of these Cyoda-specific terms:** `entity`, `entities`, `workflow`, `workflows`, `state`, `states`, `transition`, `transitions`, `compute node`, `discover mode`, `lock mode`. If the user already speaks Cyoda — go straight to Phase 2.
+
+If none of those terms appear, give a brief orientation first:
 
 **Orientation (2-3 sentences maximum):**
 
@@ -32,7 +34,11 @@ For each entity identified, continue:
 
 Present the compute node option neutrally — it is **optional**. Many workflows work purely with Cyoda's built-in criteria and processors.
 
-**Q5:** *"Are you building this as a prototype (discover mode — schema evolves automatically) or production (lock mode — schema is fixed)?"*
+**Q5:** *"Are you building this as a prototype or targeting production? This determines the schema mode:*
+- *Discover mode (prototype): Cyoda infers and evolves the schema automatically as data is posted — no upfront field definitions needed.*
+- *Lock mode (production): The schema is fixed. Data that doesn't match is rejected. Use this when the model is stable.*
+
+*You can always start with discover and switch to lock when you're ready to go live. Which fits where you are now?"*
 
 ### Phase 3 — Output Design Summary
 

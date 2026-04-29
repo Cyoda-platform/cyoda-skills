@@ -69,15 +69,20 @@ Confirm: **"Local cyoda-go is running. REST on port 8080, gRPC on port 9090. `/c
 
 ### Cyoda Cloud
 
-**Step 1 — Check for existing account:**
+**Step 1 — Check for existing account and environment:**
 
-Ask: *"Do you have a Cyoda Cloud account? If not, sign up at https://docs.cyoda.net/ before continuing."*
+Ask: *"Do you have a Cyoda Cloud account and environment? If not, go to [Cyoda AI Studio](https://ai.cyoda.net/) and ask it to:*
+- *'create a new environment' — to provision a fresh environment*
+- *'list my environments' — to see what you already have*
+- *'redeploy environment X' — to redeploy an existing one*
+
+*AI Studio will give you an endpoint URL once the environment is ready."*
 
 Wait for confirmation.
 
 **Step 2 — Collect endpoint URL:**
 
-Ask: *"What is your Cyoda Cloud endpoint URL? (e.g., https://api.eu.cyoda.net)"*
+Ask: *"What is your Cyoda Cloud endpoint URL? (e.g., https://client-1edf4e3da14e497baf58d3aeb621ac40-dev.eu.cyoda.net)"*
 
 **Step 2b — Verify endpoint is reachable:**
 

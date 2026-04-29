@@ -25,11 +25,20 @@ If **production**: display this warning and require explicit confirmation:
 
 If user answers anything other than `yes`: stop. Do not write any credentials.
 
-**Step 2 — Collect credentials:**
+**Step 2 — Explain and collect credentials:**
 
-Ask for `client_id` and `client_secret` (collect separately, one at a time).
+Explain what these credentials are:
 
-Do not echo the secret back in the conversation.
+> "`client_id` and `client_secret` are **machine-to-machine (M2M) credentials** — they identify your application or service to Cyoda, not a personal user account. They are used by automated pipelines, compute nodes, and any service calling the Cyoda API."
+
+Ask: *"Do you already have a `client_id` and `client_secret`?"*
+
+- **If yes**: collect them and proceed.
+- **If no**: direct the user to [Cyoda AI Studio](https://ai.cyoda.net/) — ask it to "create a technical user". Return once credentials are available.
+
+**Post-redeploy note**: if the environment was recently redeployed, existing technical users may have been deleted. If authentication fails and the environment was redeployed, recreate the technical user in AI Studio before retrying.
+
+Ask for `client_id` and `client_secret` separately, one at a time. Do not echo the secret back in the conversation.
 
 **Step 3 — Obtain JWT token:**
 

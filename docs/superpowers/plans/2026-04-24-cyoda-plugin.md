@@ -2573,3 +2573,45 @@ Expected: all 11 skills appear under the `cyoda` namespace:
 git add cyoda/
 git commit -m "feat: complete cyoda plugin — 11 skills, monitor, scaffold, eval suite passing"
 ```
+
+---
+
+## Post-Launch Improvements (2026-04-29)
+
+Identified from real user session (`_developer/conversation.md`). All changes applied to spec, skill files, and evals.
+
+### 1. Q5 — Discover vs lock mode explanation (`cyoda:design`)
+
+**Problem:** Users didn't understand what discover/lock mode meant, where it applied, or whether they could switch later.
+
+**Fix:** Q5 now explains both modes in plain terms (discover = schema evolves automatically; lock = schema fixed, mismatches rejected), and states that discover→lock switch is supported.
+
+### 2. Status-first check in `cyoda:app`
+
+**Problem:** Step 2 asked "local or cloud?" without checking if Cyoda was already configured, leaving users who weren't sure to say "I don't know if I have a Cyoda instance running."
+
+**Fix:** Step 2 now invokes `/cyoda:status` first. If already connected, confirms with user. Only asks local/cloud if not connected.
+
+### 3. Schema export missing in `cyoda:migrate`
+
+**Problem:** Step 2 exported workflows but not JSON Schema (field definitions), causing incomplete migrations. User had to notice and ask.
+
+**Fix:** Step 2 now exports both workflow and JSON Schema via `GET /api/model/export/JSON_SCHEMA/{entity}/{version}` for each entity, and confirms both files exist before proceeding.
+
+### 4. M2M credential explanation in `cyoda:login`
+
+**Problem:** Skill asked for `client_id`/`client_secret` without explaining what they are or where to get them.
+
+**Fix:** Step 2 now explains M2M credentials (machine-to-machine, identify the application not a user), asks if user already has them, directs to AI Studio if not, and notes that credentials may be deleted on environment redeploy.
+
+### 5. AI Studio guidance + correct URLs in `cyoda:setup`
+
+**Problem:** Cloud step 1 pointed to `https://docs.cyoda.net/` for sign-up (wrong) and used `https://api.eu.cyoda.net` as the endpoint example (wrong format).
+
+**Fix:** Cloud step 1 now directs to `https://ai.cyoda.net/` and explains that the user can prompt AI Studio to create/list/redeploy environments. Endpoint example updated to correct format: `https://client-<hash>-<env>.eu.cyoda.net`.
+
+### 6. Technical user creation via AI Studio (`cyoda:login` + `cyoda:setup`)
+
+**Problem:** No guidance on how to create M2M credentials through AI Studio.
+
+**Fix:** Both skills now explain that AI Studio at `https://ai.cyoda.net/` accepts conversational prompts for credential management ("create a technical user"). Also covers the post-redeploy case where credentials may need to be recreated.

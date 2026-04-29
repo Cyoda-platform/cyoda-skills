@@ -31,13 +31,16 @@
     {
       "id": 3,
       "prompt": "I want a simple document approval workflow — nothing fancy",
-      "expected_output": "Asks about domain objects and states, presents compute nodes as optional, accepts 'no compute nodes needed' gracefully, produces design summary without compute nodes",
+      "expected_output": "Asks about domain objects and states, presents compute nodes as optional, accepts 'no compute nodes needed' gracefully, produces design summary without compute nodes. When asking Q5 about schema mode, explains discover vs lock with the ability to switch later.",
       "files": {},
       "assertions": [
         { "id": "asks-domain-objects", "text": "Asks about domain objects and their states", "type": "behavior" },
         { "id": "presents-compute-optional", "text": "Presents compute nodes as optional when asking about them", "type": "behavior" },
         { "id": "accepts-no-compute", "text": "Accepts 'no compute nodes needed' gracefully without pushing back", "type": "behavior" },
-        { "id": "no-compute-in-summary", "text": "Does NOT include compute nodes in design summary when not needed", "type": "behavior" }
+        { "id": "no-compute-in-summary", "text": "Does NOT include compute nodes in design summary when not needed", "type": "behavior" },
+        { "id": "q5-explains-discover", "text": "Q5 explains discover mode: schema evolves automatically, no upfront definitions", "type": "behavior" },
+        { "id": "q5-explains-lock", "text": "Q5 explains lock mode: schema fixed, mismatches rejected", "type": "behavior" },
+        { "id": "q5-can-switch", "text": "Q5 mentions you can start with discover and switch to lock later", "type": "behavior" }
       ]
     }
   ]

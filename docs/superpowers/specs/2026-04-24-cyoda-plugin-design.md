@@ -129,7 +129,7 @@ Two phases:
 - What states does each entity move through?
 - What triggers each transition? (manual, time-based, message-based, automatic)
 - Do any transitions need custom logic? → compute nodes (presented as optional)
-- What does the schema look like? (discover mode for prototyping, lock for production)
+- What does the schema look like? (discover mode for prototyping — schema evolves automatically, can switch to lock later; lock mode for production — schema fixed, mismatches rejected)
 
 Output: a structured app design that feeds into `cyoda:build`.
 
@@ -198,7 +198,12 @@ Obtains a JWT token via OAuth 2.0 client credentials flow and writes connection 
 1. Ask: "Is this a development or production environment?"
 2. If **development**: proceed, write config with `"env": "development"`
 3. If **production**: show warning — *"Storing production credentials in a local file is a security risk. This file will be gitignored but remains on disk in plain text. Do you accept this risk?"* — require explicit `yes` before proceeding, write `"env": "production"`
-4. Collect `client_id` and `client_secret`
+4. Explain M2M credentials, then collect them:
+   - Explain: *"`client_id` and `client_secret` are machine-to-machine (M2M) credentials that identify your application or service to Cyoda — not a personal login. They're used by automated pipelines, compute nodes, and any service calling the Cyoda API."*
+   - Ask: "Do you already have a `client_id` and `client_secret`?"
+     - If yes: collect them and proceed.
+     - If no: direct to Cyoda AI Studio at https://ai.cyoda.net/ — ask it to "create a technical user". Return once credentials are available.
+   - **Post-redeploy note**: if the environment was recently redeployed, technical users may have been deleted — credentials that previously worked may fail. In that case, recreate the technical user in AI Studio.
 5. Call OAuth token endpoint, obtain JWT
 6. Merge `token` and `env` into `.cyoda/config` using `jq` (preserves existing `endpoint`)
 7. Add `.cyoda/config` and `.cyoda/` to `.gitignore` if not already present
@@ -228,8 +233,8 @@ Two modes, selected at invocation:
 8. Confirm: mock auth is active — `cyoda:login` not needed for local
 
 **Cloud:**
-1. Check for existing Cyoda Cloud account; if none, direct to account creation
-2. Collect endpoint URL; probe reachability before writing config
+1. Check for existing Cyoda Cloud account; if none, direct to Cyoda AI Studio at https://ai.cyoda.net/ — the user can prompt it: "create a new environment", "list my environments", or "redeploy environment X". The response provides the endpoint URL.
+2. Collect endpoint URL (format: `https://client-<hash>-<env>.eu.cyoda.net`); probe reachability before writing config
 3. Write `{"endpoint": "<url>"}` to `.cyoda/config`
 4. Gitignore `.cyoda/config` and `.cyoda/`
 5. Prompt user to run `cyoda:login` to complete auth
@@ -239,9 +244,9 @@ Two modes, selected at invocation:
 
 Lift-and-shift from local cyoda-go to Cyoda Cloud:
 
-1. Export all entity models and workflow configs from local instance (GET endpoints)
+1. Export all entity models, **JSON Schema (field definitions)**, and workflow configs from local instance (GET endpoints). Schema export uses `GET /api/model/export/JSON_SCHEMA/{entity}/{version}`. Both schema and workflow must be exported per entity.
 2. Invoke `cyoda:setup` (cloud mode) — account setup, endpoint, auth
-3. Import models and workflows to cloud instance (POST endpoints)
+3. Import models, schemas, and workflows to cloud instance (POST endpoints)
 4. Run `cyoda:test` against the cloud endpoint to verify behavior matches local
 5. Guide the user to update their application's Cyoda endpoint and auth config
 
@@ -253,10 +258,11 @@ Newcomer orchestrator. Walks the user through the full journey by sequencing the
 
 1. Orient to Cyoda philosophy (inline, brief)
 2. Invoke `cyoda:design` for domain brainstorm
-3. Invoke `cyoda:setup` (local or cloud, user's choice)
-4. Invoke `cyoda:build` for incremental implementation
-5. Invoke `cyoda:test` for smoke testing
-6. Offer `cyoda:migrate` if user wants to move to cloud
+3. **Check existing instance first**: invoke `cyoda:status` before asking local vs cloud. If already connected, confirm whether to use that environment. Only ask local/cloud if not connected.
+4. Invoke `cyoda:setup` (local or cloud, user's choice) if not already configured
+5. Invoke `cyoda:build` for incremental implementation
+6. Invoke `cyoda:test` for smoke testing
+7. Offer `cyoda:migrate` if user wants to move to cloud
 
 Experienced users can skip this and invoke individual skills directly.
 
