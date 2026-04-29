@@ -1,7 +1,6 @@
 ---
 name: app
 description: Start here if you're new to Cyoda. Walks through the full development journey — Cyoda orientation, app design, instance setup, incremental build, and testing. Experienced users can invoke individual skills directly.
-disable-model-invocation: true
 argument-hint: [describe your app idea]
 ---
 

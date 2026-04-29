@@ -1,7 +1,6 @@
 ---
 name: setup
 description: Provision a Cyoda instance. Two modes — local (install and start cyoda-go) or cloud (configure connection to Cyoda Cloud). Run this first before any other cyoda skills.
-disable-model-invocation: true
 allowed-tools: Bash(brew *) Bash(cyoda *) Bash(curl *) Bash(mkdir *) Bash(tee *) Bash(grep *) Bash(cat *) Bash(jq *)
 ---
 

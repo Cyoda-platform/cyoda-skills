@@ -1,7 +1,6 @@
 ---
 name: build
 description: Incrementally build Cyoda entity models and workflows. Inspects the running instance, brainstorms the next change, generates config, and registers it. Supports new entities, new states, new transitions, criteria, and schema mode changes.
-disable-model-invocation: true
 allowed-tools: Bash(curl *) Bash(cat *) Bash(grep *) Bash(echo *) Bash(tee *) Bash(jq *)
 ---
 

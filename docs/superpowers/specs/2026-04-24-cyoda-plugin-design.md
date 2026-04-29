@@ -70,13 +70,14 @@ Each skill directory may contain `examples/`, `templates/`, and `resources/` sub
 
 ## Skill Invocation Control
 
-Skills with side effects (modifying a running Cyoda instance, installing software) use `disable-model-invocation: true` so Claude cannot trigger them automatically:
+All skills can be invoked by both users and Claude. Sensitive actions are guarded by explicit confirmation prompts within the skill itself:
 
-- `cyoda:setup`, `cyoda:login`, `cyoda:build`, `cyoda:test`, `cyoda:migrate`, `cyoda:app`
+- `cyoda:login` — requires explicit `yes` before storing production credentials
+- `cyoda:build` — displays a prominent production warning and confirms before each registration when `env=production`
+- `cyoda:setup` — asks the user to confirm the mode (local vs cloud) before proceeding
+- `cyoda:migrate`, `cyoda:test` — confirm before making changes to a target instance
 
-Skills that provide knowledge or guidance can be auto-invoked by Claude:
-
-- `cyoda:status`, `cyoda:docs`, `cyoda:design`, `cyoda:compute`, `cyoda:debug`
+Skills that provide knowledge or guidance (`cyoda:status`, `cyoda:docs`, `cyoda:design`, `cyoda:compute`, `cyoda:debug`) have no side effects and require no confirmation.
 
 ## Key Skill Behaviors
 

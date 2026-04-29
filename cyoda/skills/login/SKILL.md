@@ -1,7 +1,6 @@
 ---
 name: login
 description: Authenticate to Cyoda Cloud using OAuth 2.0 client credentials. Obtains a JWT token and saves it to .cyoda/config. Includes production safety guard requiring explicit confirmation before storing production credentials.
-disable-model-invocation: true
 allowed-tools: Bash(curl *) Bash(cat *) Bash(grep *) Bash(tee *) Bash(echo *) Bash(jq *)
 ---
 

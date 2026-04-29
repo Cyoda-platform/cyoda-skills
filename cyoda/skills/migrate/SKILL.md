@@ -1,7 +1,6 @@
 ---
 name: migrate
 description: Lift-and-shift a Cyoda application from local cyoda-go to Cyoda Cloud. Exports entity models and workflows from local, sets up cloud instance, imports, and verifies. No code changes required — same API surface on both tiers.
-disable-model-invocation: true
 allowed-tools: Bash(curl *) Bash(cat *) Bash(grep *) Bash(mkdir *) Bash(tee *) Bash(jq *)
 ---
 

@@ -1,7 +1,6 @@
 ---
 name: test
 description: Smoke-test a running Cyoda instance. Generates and runs tests for entity creation, transitions, state verification, and point-in-time history. Runs in an isolated subagent to keep test output out of the main conversation.
-disable-model-invocation: true
 context: fork
 agent: general-purpose
 allowed-tools: Bash(curl *) Bash(cat *) Bash(grep *) Bash(chmod *) Bash(bash *) Bash(jq *)
