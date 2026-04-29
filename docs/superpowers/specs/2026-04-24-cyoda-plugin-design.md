@@ -336,8 +336,8 @@ Each skill includes an `evaluations/` directory with 3+ JSON eval files covering
 
 ## References
 
-- Cyoda docs: https://cyoda-docs-feature-cyoda-go-init.surge.sh/
-- OpenAPI: https://github.com/Cyoda-platform/cyoda-docs/blob/main/public/openapi/openapi.json
+- Cyoda docs: https://docs.cyoda.net/
+- OpenAPI: https://docs.cyoda.net/openapi/openapi.json
 - gRPC schemas: https://github.com/Cyoda-platform/cyoda-docs/tree/main/src/schemas
 - cyoda-go repo: https://github.com/cyoda-platform/cyoda-go
 - Skills guide: https://code.claude.com/docs/en/skills.md

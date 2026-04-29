@@ -30,7 +30,7 @@ brew tap cyoda-platform/cyoda-go
 brew install cyoda
 ```
 
-If the user is not on macOS/Linux with Homebrew, check https://cyoda-docs-feature-cyoda-go-init.surge.sh/ for alternative installers.
+If the user is not on macOS/Linux with Homebrew, check https://docs.cyoda.net/ for alternative installers.
 
 **Step 3 — Initialize (first time only):**
 
@@ -72,7 +72,7 @@ Confirm: **"Local cyoda-go is running. REST on port 8080, gRPC on port 9090. `/c
 
 **Step 1 — Check for existing account:**
 
-Ask: *"Do you have a Cyoda Cloud account? If not, sign up at https://cyoda-docs-feature-cyoda-go-init.surge.sh/ before continuing."*
+Ask: *"Do you have a Cyoda Cloud account? If not, sign up at https://docs.cyoda.net/ before continuing."*
 
 Wait for confirmation.
 

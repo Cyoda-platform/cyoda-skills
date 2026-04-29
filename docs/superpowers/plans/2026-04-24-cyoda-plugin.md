@@ -173,7 +173,7 @@ Each skill's evaluations live in a single file per skill: `evaluations/evals.jso
   "author": {
     "name": "Cyoda Platform"
   },
-  "homepage": "https://cyoda-docs-feature-cyoda-go-init.surge.sh/",
+  "homepage": "https://docs.cyoda.net/",
   "repository": "https://github.com/Cyoda-platform/cyoda-docs"
 }
 ```
@@ -185,7 +185,7 @@ Save to `cyoda/.claude-plugin/plugin.json`.
 ```markdown
 # Cyoda Plugin for Claude Code
 
-Helps you build applications on [Cyoda](https://cyoda-docs-feature-cyoda-go-init.surge.sh/) — an Entity Database Management System (EDBMS).
+Helps you build applications on [Cyoda](https://docs.cyoda.net/) — an Entity Database Management System (EDBMS).
 
 ## Skills
 
@@ -237,7 +237,7 @@ git commit -m "feat: scaffold cyoda plugin — manifest and README"
 
 - [ ] **Step 1: Check the Cyoda OpenAPI spec for the health/version endpoint**
 
-Fetch https://github.com/Cyoda-platform/cyoda-docs/blob/main/public/openapi/openapi.json and search for endpoints returning version or health info. Note the exact path for use in the SKILL.md. Common candidates: `/api/v1/info`, `/api/version`, `/readyz` (admin port 9091).
+Fetch https://docs.cyoda.net/openapi/openapi.json and search for endpoints returning version or health info. Note the exact path for use in the SKILL.md. Common candidates: `/api/v1/info`, `/api/version`, `/readyz` (admin port 9091).
 
 - [ ] **Step 2: Write SKILL.md**
 
@@ -281,7 +281,7 @@ Report based on output:
 - `STATUS=connected`, endpoint contains `localhost` → **"Connected to Local cyoda-go — v{VERSION}"**
 - `STATUS=connected`, cloud endpoint → **"Connected to Cyoda Cloud — v{VERSION}"**
 
-Note: The exact health and version endpoint paths should be verified against the Cyoda OpenAPI spec at https://github.com/Cyoda-platform/cyoda-docs/blob/main/public/openapi/openapi.json.
+Note: The exact health and version endpoint paths should be verified against the Cyoda OpenAPI spec at https://docs.cyoda.net/openapi/openapi.json.
 ```
 
 Save to `cyoda/skills/status/SKILL.md`.
@@ -426,7 +426,7 @@ which cyoda 2>/dev/null && cyoda help 2>/dev/null | head -50 || echo "CYODA_CLI_
 Ask the user: *"Local `cyoda` CLI is not installed. Local docs are version-specific and more accurate for API-level questions — I recommend installing it. Run `/cyoda:setup` to install cyoda-go locally, or I can proceed with the online docs (which reflect the latest version). What would you prefer?"*
 
 - If user wants to install: invoke `/cyoda:setup` (local mode), then re-invoke this skill.
-- If user prefers web docs: fetch from https://cyoda-docs-feature-cyoda-go-init.surge.sh/ and synthesize the answer.
+- If user prefers web docs: fetch from https://docs.cyoda.net/ and synthesize the answer.
 
 **If cyoda CLI is installed:**
 
@@ -435,9 +435,9 @@ Ask the user: *"Local `cyoda` CLI is not installed. Local docs are version-speci
 ```!
 cyoda help 2>/dev/null
 ```
-3. If the answer is not fully covered by local help, supplement with web docs at https://cyoda-docs-feature-cyoda-go-init.surge.sh/
+3. If the answer is not fully covered by local help, supplement with web docs at https://docs.cyoda.net/
 4. For gRPC/schema details, reference: https://github.com/Cyoda-platform/cyoda-docs/tree/main/src/schemas
-5. For REST API details, reference: https://github.com/Cyoda-platform/cyoda-docs/blob/main/public/openapi/openapi.json
+5. For REST API details, reference: https://docs.cyoda.net/openapi/openapi.json
 
 **Always:**
 - Synthesize a direct, specific answer to the question asked
@@ -574,7 +574,7 @@ brew tap cyoda-platform/cyoda-go
 brew install cyoda
 ```
 
-If the user is not on macOS/Linux with Homebrew, check https://cyoda-docs-feature-cyoda-go-init.surge.sh/ for alternative installers.
+If the user is not on macOS/Linux with Homebrew, check https://docs.cyoda.net/ for alternative installers.
 
 **Step 3 — Initialize (first time only):**
 
@@ -619,7 +619,7 @@ Confirm: **"Local cyoda-go is running. REST on port 8080, gRPC on port 9090. Run
 
 **Step 1 — Check for existing account:**
 
-Ask: *"Do you have a Cyoda Cloud account? If not, sign up at https://cyoda-docs-feature-cyoda-go-init.surge.sh/ before continuing."*
+Ask: *"Do you have a Cyoda Cloud account? If not, sign up at https://docs.cyoda.net/ before continuing."*
 
 Wait for confirmation.
 
@@ -750,7 +750,7 @@ git commit -m "feat: add cyoda:setup skill"
 
 - [ ] **Step 1: Find the OAuth token endpoint**
 
-Fetch the OpenAPI spec at https://github.com/Cyoda-platform/cyoda-docs/blob/main/public/openapi/openapi.json and locate the OAuth 2.0 token endpoint path and required parameters. Note the exact URL pattern for use in the SKILL.md.
+Fetch the OpenAPI spec at https://docs.cyoda.net/openapi/openapi.json and locate the OAuth 2.0 token endpoint path and required parameters. Note the exact URL pattern for use in the SKILL.md.
 
 - [ ] **Step 2: Write SKILL.md**
 
@@ -1119,7 +1119,7 @@ git commit -m "feat: add cyoda:design skill with patterns resource"
 
 - [ ] **Step 1: Check the Cyoda OpenAPI spec for model/workflow endpoints**
 
-Fetch https://github.com/Cyoda-platform/cyoda-docs/blob/main/public/openapi/openapi.json and note:
+Fetch https://docs.cyoda.net/openapi/openapi.json and note:
 - `GET` endpoint to list existing entity models
 - `POST` endpoint to create/import a workflow for a model
 - `POST` endpoint to create an entity

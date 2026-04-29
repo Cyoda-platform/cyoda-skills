@@ -24,7 +24,7 @@ Rules that are easy to get wrong:
 
 ## References
 
-- Cyoda docs: https://cyoda-docs-feature-cyoda-go-init.surge.sh/
-- OpenAPI: https://github.com/Cyoda-platform/cyoda-docs/blob/main/public/openapi/openapi.json
+- Cyoda docs: https://docs.cyoda.net/
+- OpenAPI: https://docs.cyoda.net/openapi/openapi.json
 - Plugins guide: https://code.claude.com/docs/en/plugins
 - Skills guide: https://code.claude.com/docs/en/skills.md

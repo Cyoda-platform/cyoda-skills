@@ -12,19 +12,19 @@ Current config:
 jq . .cyoda/config 2>/dev/null || echo '{"endpoint":"none"}'
 ```
 
-Checking reachability:
+Checking reachability and version:
 ```!
 ENDPOINT=$(jq -r '.endpoint // "none"' .cyoda/config 2>/dev/null || echo "none");
 ENV=$(jq -r '.env // "development"' .cyoda/config 2>/dev/null || echo "development");
 if [ -z "$ENDPOINT" ] || [ "$ENDPOINT" = "none" ]; then
   echo "STATUS=not_configured";
 else
-  RESULT=$(curl -sf --max-time 3 "${ENDPOINT%/}/readyz" 2>/dev/null || echo "unreachable");
-  if [ "$RESULT" = "unreachable" ]; then
+  HELP=$(curl -sf --max-time 3 "${ENDPOINT%/}/api/help" 2>/dev/null);
+  if [ -z "$HELP" ]; then
     echo "STATUS=unreachable ENDPOINT=$ENDPOINT";
   else
-    VERSION=$(curl -sf --max-time 3 "${ENDPOINT%/}/api/v1/info" 2>/dev/null | grep -o '"version":"[^"]*"' | cut -d'"' -f4);
-    echo "STATUS=connected ENDPOINT=$ENDPOINT VERSION=${VERSION:-unknown} ENV=${ENV:-development}";
+    VERSION=$(echo "$HELP" | jq -r '.version // "unknown"');
+    echo "STATUS=connected ENDPOINT=$ENDPOINT VERSION=$VERSION ENV=${ENV:-development}";
   fi;
 fi
 ```
@@ -32,9 +32,7 @@ fi
 Report based on output:
 
 - `STATUS=not_configured` → **"Not connected to Cyoda — run `/cyoda:setup` to get started"**
-- `STATUS=unreachable` → **"Cyoda instance unreachable at {ENDPOINT} — is it running? Try `cyoda health`"**
+- `STATUS=unreachable` → **"Cyoda instance unreachable at {ENDPOINT} — is it running?"**
 - `STATUS=connected`, `ENV=production` → **"⚠️ Connected to Cyoda Cloud [PRODUCTION] — v{VERSION}"**
 - `STATUS=connected`, endpoint contains `localhost` → **"Connected to Local cyoda-go — v{VERSION}"**
 - `STATUS=connected`, cloud endpoint → **"Connected to Cyoda Cloud — v{VERSION}"**
-
-Note: The exact health and version endpoint paths should be verified against the Cyoda OpenAPI spec at https://github.com/Cyoda-platform/cyoda-docs/blob/main/public/openapi/openapi.json.

@@ -1,6 +1,6 @@
 # Cyoda Plugin for Claude Code
 
-Helps you build applications on [Cyoda](https://cyoda-docs-feature-cyoda-go-init.surge.sh/) — an Entity Database Management System (EDBMS).
+Helps you build applications on [Cyoda](https://docs.cyoda.net/) — an Entity Database Management System (EDBMS).
 
 ## Skills
 

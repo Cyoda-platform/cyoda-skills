@@ -17,14 +17,14 @@ which cyoda 2>/dev/null && cyoda help 2>/dev/null | head -50 || echo "CYODA_CLI_
 Ask the user: *"Local `cyoda` CLI is not installed. Local docs are version-specific and more accurate for API-level questions — I recommend installing it. Run `/cyoda:setup` to install cyoda-go locally, or I can proceed with the online docs (which reflect the latest version). What would you prefer?"*
 
 - If user wants to install: invoke `/cyoda:setup` (local mode), then re-invoke this skill.
-- If user prefers web docs: fetch from https://cyoda-docs-feature-cyoda-go-init.surge.sh/ and synthesize the answer.
+- If user prefers web docs: fetch from https://docs.cyoda.net/ and synthesize the answer.
 
 **If cyoda CLI is installed:**
 
 1. Use the `cyoda help` output above as the primary source to answer the user's question.
-2. If the answer is not fully covered by local help, supplement with web docs at https://cyoda-docs-feature-cyoda-go-init.surge.sh/
+2. If the answer is not fully covered by local help, supplement with web docs at https://docs.cyoda.net/
 3. For gRPC/schema details, reference: https://github.com/Cyoda-platform/cyoda-docs/tree/main/src/schemas
-4. For REST API details, reference: https://github.com/Cyoda-platform/cyoda-docs/blob/main/public/openapi/openapi.json
+4. For REST API details, reference: https://docs.cyoda.net/openapi/openapi.json
 
 **Always:**
 - Synthesize a direct, specific answer to the question asked
