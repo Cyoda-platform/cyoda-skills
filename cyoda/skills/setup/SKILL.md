@@ -23,13 +23,30 @@ If already installed, skip to Step 4 (start and verify).
 
 **Step 2 — Install via Homebrew:**
 
-Run:
+Attempt each command in sequence:
+
 ```bash
 brew tap cyoda-platform/cyoda-go
+```
+
+```bash
 brew install cyoda
 ```
 
-If the user is not on macOS/Linux with Homebrew, check https://docs.cyoda.net/ for alternative installers.
+If **either command fails** (non-zero exit, permission error, Homebrew not found — any error at all):
+- Do NOT attempt to diagnose or fix Homebrew.
+- Do NOT run `brew doctor`, `sudo`, or any remediation.
+- Immediately show the user the exact commands and ask them to run manually:
+
+> *"I couldn't complete the installation — this usually needs to run in your own terminal. Please run these commands and let me know when they're done:*
+> ```bash
+> brew tap cyoda-platform/cyoda-go
+> brew install cyoda
+> ```"
+
+Wait for the user to confirm before continuing to Step 3.
+
+If Homebrew is not available at all, check https://docs.cyoda.net/ for alternative installers.
 
 **Step 3 — Initialize (first time only):**
 
