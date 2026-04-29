@@ -1,10 +1,8 @@
-{
-  "monitors": [
+[
     {
       "name": "Cyoda config watcher",
       "description": "Watches .cyoda/config for creation or modification. When credentials change (after cyoda:login or cyoda:setup), Claude is notified automatically so it can report the new connection status without requiring the user to re-invoke.",
       "command": "sh -c 'CONFIG=\"${CLAUDE_PROJECT_DIR:-$HOME}/.cyoda/config\"; if command -v fswatch >/dev/null 2>&1; then if [ ! -f \"$CONFIG\" ]; then until [ -f \"$CONFIG\" ]; do sleep 2; done; fi; fswatch -1 \"$CONFIG\" >/dev/null 2>&1 && echo \"Cyoda config updated — run /cyoda:status to check connection\"; elif command -v inotifywait >/dev/null 2>&1; then if [ ! -d \"$(dirname \"$CONFIG\")\" ]; then until [ -d \"$(dirname \"$CONFIG\")\" ]; do sleep 2; done; fi; if [ ! -f \"$CONFIG\" ]; then until [ -f \"$CONFIG\" ]; do sleep 2; done; fi; inotifywait -e modify,create \"$CONFIG\" >/dev/null 2>&1 && echo \"Cyoda config updated — run /cyoda:status to check connection\"; else LAST_MT=\"\"; while true; do if [ -f \"$CONFIG\" ]; then MT=$(date -r \"$CONFIG\" +%s 2>/dev/null); if [ -n \"$MT\" ] && [ \"$MT\" != \"$LAST_MT\" ]; then if [ -n \"$LAST_MT\" ]; then echo \"Cyoda config updated — run /cyoda:status to check connection\"; break; fi; LAST_MT=\"$MT\"; fi; fi; sleep 5; done; fi'",
       "trigger": "Output a line when .cyoda/config is created or modified, signalling that Cyoda credentials have changed and the user should run /cyoda:status to verify the new connection state."
     }
-  ]
-}
+]
