@@ -8,7 +8,7 @@ Helps you build applications on [Cyoda](https://docs.cyoda.net/) — an Entity D
 |---|---|
 | `/cyoda:app` | Start here if you're new — walks the full journey |
 | `/cyoda:setup` | Install cyoda-go locally or connect to Cyoda Cloud |
-| `/cyoda:login` | Authenticate to Cyoda Cloud (obtain JWT) |
+| `/cyoda:auth` | Authenticate to Cyoda Cloud (obtain JWT) |
 | `/cyoda:design` | Brainstorm entities and workflows for your app |
 | `/cyoda:build` | Incrementally build and register entity models and workflows |
 | `/cyoda:compute` | Implement compute node processors via gRPC |
@@ -30,4 +30,4 @@ Skills share connection state via `.cyoda/config` (always gitignored):
 }
 ```
 
-Run `/cyoda:setup` then `/cyoda:login` to populate this file.
+Run `/cyoda:setup` then `/cyoda:auth` to populate this file.

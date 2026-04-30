@@ -1,9 +1,9 @@
 {
-  "skill_name": "login",
+  "skill_name": "auth",
   "evals": [
     {
       "id": 1,
-      "prompt": "/cyoda:login",
+      "prompt": "/cyoda:auth",
       "expected_output": "Asks dev vs production, explains M2M credentials and directs to AI Studio if user doesn't have them, collects client_id and client_secret separately, calls OAuth token endpoint, writes token and env=development as JSON fields to .cyoda/config, confirms success without production warning",
       "files": {
         ".cyoda/config": "{\"endpoint\": \"https://client-1edf4e3da14e497baf58d3aeb621ac40-dev.eu.cyoda.net\"}"
@@ -22,7 +22,7 @@
     },
     {
       "id": 2,
-      "prompt": "/cyoda:login — production environment, I accept the risk",
+      "prompt": "/cyoda:auth — production environment, I accept the risk",
       "expected_output": "Shows security warning, requires explicit 'yes', explains M2M credentials, collects credentials, writes token and env=production as JSON fields to .cyoda/config, shows prominent production reminder",
       "files": {
         ".cyoda/config": "{\"endpoint\": \"https://client-1edf4e3da14e497baf58d3aeb621ac40-prod.eu.cyoda.net\"}"
@@ -37,7 +37,7 @@
     },
     {
       "id": 3,
-      "prompt": "/cyoda:login — production, but I'm not sure about storing credentials",
+      "prompt": "/cyoda:auth — production, but I'm not sure about storing credentials",
       "expected_output": "Shows security warning, stops when user does not answer 'yes', does not write any credentials, suggests alternatives",
       "files": {
         ".cyoda/config": "{\"endpoint\": \"https://client-1edf4e3da14e497baf58d3aeb621ac40-prod.eu.cyoda.net\"}"
@@ -51,7 +51,7 @@
     },
     {
       "id": 4,
-      "prompt": "/cyoda:login — my login stopped working after the environment was redeployed",
+      "prompt": "/cyoda:auth — my login stopped working after the environment was redeployed",
       "expected_output": "Recognises the post-redeploy scenario, notes that technical users may be deleted on redeploy, directs user to recreate the technical user in AI Studio before retrying",
       "files": {
         ".cyoda/config": "{\"endpoint\": \"https://client-1edf4e3da14e497baf58d3aeb621ac40-dev.eu.cyoda.net\"}"

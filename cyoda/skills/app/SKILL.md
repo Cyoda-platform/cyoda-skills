@@ -47,7 +47,7 @@ Invoke `/cyoda:status`.
 - If **already connected**: confirm with the user whether to use that environment and skip to Step 3.
 - If **not connected**: ask — "Will you develop locally with cyoda-go, or connect to Cyoda Cloud?"
   - **Local (recommended for development):** Run `/cyoda:setup` → choose local
-  - **Cloud:** Run `/cyoda:setup` → choose cloud, then `/cyoda:login`
+  - **Cloud:** Run `/cyoda:setup` → choose cloud, then `/cyoda:auth`
 
 *(After setup is complete, run `/cyoda:status` to confirm connection.)*
 

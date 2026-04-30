@@ -1,9 +1,9 @@
 {
-  "name": "Config file updated after cyoda:login refreshes credentials",
-  "description": "Verifies that the monitor detects a modification to an existing .cyoda/config file (e.g. when cyoda:login overwrites the token) and notifies Claude without requiring the user to do anything.",
+  "name": "Config file updated after cyoda:auth refreshes credentials",
+  "description": "Verifies that the monitor detects a modification to an existing .cyoda/config file (e.g. when cyoda:auth overwrites the token) and notifies Claude without requiring the user to do anything.",
   "input": {
-    "environment": ".cyoda/config already exists with a previous token; the user's session token has expired and they run cyoda:login to refresh it",
-    "trigger": "cyoda:login overwrites .cyoda/config with an updated token field"
+    "environment": ".cyoda/config already exists with a previous token; the user's session token has expired and they run cyoda:auth to refresh it",
+    "trigger": "cyoda:auth overwrites .cyoda/config with an updated token field"
   },
   "expectedBehavior": [
     "Monitor detects the modification to the existing .cyoda/config file",

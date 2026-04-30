@@ -54,7 +54,7 @@ Delegate to `/cyoda:docs` for the exact history/audit endpoint paths.
 #### Connectivity Issues
 
 1. Check `.cyoda/config` has correct `endpoint` value
-2. For cloud: check `token` is not expired — re-run `/cyoda:login` if needed
+2. For cloud: check `token` is not expired — re-run `/cyoda:auth` if needed
 3. Test endpoint directly:
 ```!
 ENDPOINT=$(jq -r '.endpoint' .cyoda/config)

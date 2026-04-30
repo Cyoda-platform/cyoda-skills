@@ -16,7 +16,7 @@
 ## Cyoda Cloud Setup
 
 - [ ] Run `/cyoda:setup` (cloud mode) — endpoint configured
-- [ ] Run `/cyoda:login` — JWT token obtained
+- [ ] Run `/cyoda:auth` — JWT token obtained
 - [ ] Run `/cyoda:status` — confirm cloud connection
 
 ## Import to Cloud

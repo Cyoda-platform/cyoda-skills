@@ -32,13 +32,13 @@
     {
       "id": 3,
       "prompt": "/cyoda:app — I want to use Cyoda Cloud, not install anything locally",
-      "expected_output": "Invokes /cyoda:status first; since not connected, accepts cloud-first approach, guides to /cyoda:setup (cloud mode) then /cyoda:login, does not insist on local installation",
+      "expected_output": "Invokes /cyoda:status first; since not connected, accepts cloud-first approach, guides to /cyoda:setup (cloud mode) then /cyoda:auth, does not insist on local installation",
       "files": {},
       "assertions": [
         { "id": "checks-status-first", "text": "Invokes /cyoda:status before asking about setup mode", "type": "behavior" },
         { "id": "accepts-cloud-first", "text": "Accepts cloud-first approach without pushback", "type": "behavior" },
         { "id": "guides-to-cloud-setup", "text": "Guides to /cyoda:setup in cloud mode", "type": "behavior" },
-        { "id": "guides-to-login", "text": "Guides to /cyoda:login for authentication", "type": "behavior" },
+        { "id": "guides-to-login", "text": "Guides to /cyoda:auth for authentication", "type": "behavior" },
         { "id": "no-local-insistence", "text": "Does NOT insist on local cyoda-go installation", "type": "behavior" }
       ]
     },

@@ -29,10 +29,10 @@ cyoda/
 ├── skills/setup/evaluations/eval-1-local-install.json
 ├── skills/setup/evaluations/eval-2-cloud-setup.json
 ├── skills/setup/evaluations/eval-3-already-running.json
-├── skills/login/SKILL.md
-├── skills/login/evaluations/eval-1-dev-env.json
-├── skills/login/evaluations/eval-2-production-confirmed.json
-├── skills/login/evaluations/eval-3-production-declined.json
+├── skills/auth/SKILL.md
+├── skills/auth/evaluations/eval-1-dev-env.json
+├── skills/auth/evaluations/eval-2-production-confirmed.json
+├── skills/auth/evaluations/eval-3-production-declined.json
 ├── skills/design/SKILL.md
 ├── skills/design/resources/patterns.md
 ├── skills/design/evaluations/eval-1-newcomer-chess-app.json
@@ -193,7 +193,7 @@ Helps you build applications on [Cyoda](https://docs.cyoda.net/) — an Entity D
 |---|---|
 | `/cyoda:app` | Start here if you're new — walks the full journey |
 | `/cyoda:setup` | Install cyoda-go locally or connect to Cyoda Cloud |
-| `/cyoda:login` | Authenticate to Cyoda Cloud (obtain JWT) |
+| `/cyoda:auth` | Authenticate to Cyoda Cloud (obtain JWT) |
 | `/cyoda:design` | Brainstorm entities and workflows for your app |
 | `/cyoda:build` | Incrementally build and register entity models and workflows |
 | `/cyoda:compute` | Implement compute node processors via gRPC |
@@ -213,7 +213,7 @@ CYODA_TOKEN=eyJ...
 CYODA_ENV=development
 ```
 
-Run `/cyoda:setup` then `/cyoda:login` to populate this file.
+Run `/cyoda:setup` then `/cyoda:auth` to populate this file.
 ```
 
 Save to `cyoda/README.md`.
@@ -611,7 +611,7 @@ grep -qxF '.cyoda/config' .gitignore 2>/dev/null || echo '.cyoda/config' >> .git
 echo '.cyoda/' >> .gitignore
 ```
 
-Confirm: **"Local cyoda-go is running. REST on port 8080, gRPC on port 9090. Run `/cyoda:login` is not needed for local — mock auth is active."**
+Confirm: **"Local cyoda-go is running. REST on port 8080, gRPC on port 9090. Run `/cyoda:auth` is not needed for local — mock auth is active."**
 
 ---
 
@@ -641,7 +641,7 @@ echo '.cyoda/' >> .gitignore
 
 **Step 4 — Prompt for auth:**
 
-*"Endpoint saved. Now run `/cyoda:login` to authenticate and obtain your JWT token."*
+*"Endpoint saved. Now run `/cyoda:auth` to authenticate and obtain your JWT token."*
 
 After login, verify connectivity:
 ```bash
@@ -691,7 +691,7 @@ Save to `cyoda/skills/setup/SKILL.md`.
     "Asks if user has an account",
     "Collects endpoint URL",
     "Writes only CYODA_ENDPOINT (no token yet)",
-    "Directs user to /cyoda:login next",
+    "Directs user to /cyoda:auth next",
     "Gitignores .cyoda/config"
   ],
   "antiPatterns": [
@@ -740,13 +740,13 @@ git commit -m "feat: add cyoda:setup skill"
 
 ---
 
-## Task 6: cyoda:login Skill
+## Task 6: cyoda:auth Skill
 
 **Files:**
-- Create: `cyoda/skills/login/SKILL.md`
-- Create: `cyoda/skills/login/evaluations/eval-1-dev-env.json`
-- Create: `cyoda/skills/login/evaluations/eval-2-production-confirmed.json`
-- Create: `cyoda/skills/login/evaluations/eval-3-production-declined.json`
+- Create: `cyoda/skills/auth/SKILL.md`
+- Create: `cyoda/skills/auth/evaluations/eval-1-dev-env.json`
+- Create: `cyoda/skills/auth/evaluations/eval-2-production-confirmed.json`
+- Create: `cyoda/skills/auth/evaluations/eval-3-production-declined.json`
 
 - [ ] **Step 1: Find the OAuth token endpoint**
 
@@ -756,7 +756,7 @@ Fetch the OpenAPI spec at https://docs.cyoda.net/openapi/openapi.json and locate
 
 ```markdown
 ---
-name: login
+name: auth
 description: Authenticate to Cyoda Cloud using OAuth 2.0 client credentials. Obtains a JWT token and saves it to .cyoda/config. Includes production safety guard requiring explicit confirmation before storing production credentials.
 disable-model-invocation: true
 allowed-tools: Bash(curl *) Bash(cat *) Bash(grep *) Bash(tee *) Bash(echo *)
@@ -825,7 +825,7 @@ Report: *"Authenticated successfully. Token written to `.cyoda/config`. Run `/cy
 If `CYODA_ENV=production`: add prominent reminder — *"⚠️ You are now connected to a PRODUCTION instance. Changes made via `/cyoda:build` will affect live data."*
 ```
 
-Save to `cyoda/skills/login/SKILL.md`.
+Save to `cyoda/skills/auth/SKILL.md`.
 
 - [ ] **Step 3: Write evaluations**
 
@@ -835,7 +835,7 @@ Save to `cyoda/skills/login/SKILL.md`.
   "name": "dev-environment-login",
   "description": "User logs into a development Cyoda Cloud instance",
   "input": {
-    "userMessage": "/cyoda:login"
+    "userMessage": "/cyoda:auth"
   },
   "expectedBehavior": [
     "Asks dev vs production",
@@ -858,7 +858,7 @@ Save to `cyoda/skills/login/SKILL.md`.
   "name": "production-login-confirmed",
   "description": "User explicitly confirms production credential storage",
   "input": {
-    "userMessage": "/cyoda:login — production environment, I accept the risk"
+    "userMessage": "/cyoda:auth — production environment, I accept the risk"
   },
   "expectedBehavior": [
     "Shows security warning",
@@ -880,7 +880,7 @@ Save to `cyoda/skills/login/SKILL.md`.
   "name": "production-login-declined",
   "description": "User declines to store production credentials",
   "input": {
-    "userMessage": "/cyoda:login — production, but I'm not sure about storing credentials"
+    "userMessage": "/cyoda:auth — production, but I'm not sure about storing credentials"
   },
   "expectedBehavior": [
     "Shows security warning",
@@ -898,8 +898,8 @@ Save to `cyoda/skills/login/SKILL.md`.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add cyoda/skills/login/
-git commit -m "feat: add cyoda:login skill with production safety guard"
+git add cyoda/skills/auth/
+git commit -m "feat: add cyoda:auth skill with production safety guard"
 ```
 
 ---
@@ -1994,7 +1994,7 @@ Delegate to `/cyoda:docs` for the exact history/audit endpoint paths.
 #### Connectivity Issues
 
 1. Check `.cyoda/config` has correct `CYODA_ENDPOINT`
-2. For cloud: check `CYODA_TOKEN` is not expired — re-run `/cyoda:login` if needed
+2. For cloud: check `CYODA_TOKEN` is not expired — re-run `/cyoda:auth` if needed
 3. Test endpoint directly:
 ```!
 ENDPOINT=$(grep CYODA_ENDPOINT .cyoda/config | cut -d= -f2-)
@@ -2142,7 +2142,7 @@ git commit -m "feat: add cyoda:debug skill with observation mode"
 ## Cyoda Cloud Setup
 
 - [ ] Run `/cyoda:setup` (cloud mode) — endpoint configured
-- [ ] Run `/cyoda:login` — JWT token obtained
+- [ ] Run `/cyoda:auth` — JWT token obtained
 - [ ] Run `/cyoda:status` — confirm cloud connection
 
 ## Import to Cloud
@@ -2218,7 +2218,7 @@ Show the user what was exported.
 
 *"Now let's connect to Cyoda Cloud. I'll invoke `/cyoda:setup` (cloud mode)."*
 
-Invoke `cyoda:setup` for cloud setup, then `cyoda:login` for authentication.
+Invoke `cyoda:setup` for cloud setup, then `cyoda:auth` for authentication.
 
 After setup: re-read `.cyoda/config` to confirm cloud endpoint is active.
 
@@ -2246,7 +2246,7 @@ Invoke `/cyoda:test` against the cloud endpoint. All tests should pass identical
 
 *"Migration complete. Update your application to use:*
 - *`CYODA_ENDPOINT`: {cloud endpoint}*
-- *`CYODA_TOKEN`: (from `/cyoda:login`)*
+- *`CYODA_TOKEN`: (from `/cyoda:auth`)*
 
 *The API surface is identical — no code changes needed."*
 
@@ -2268,7 +2268,7 @@ Save to `cyoda/skills/migrate/SKILL.md`.
   "expectedBehavior": [
     "Verifies local instance is running",
     "Exports all entity models and workflows to migration/ directory",
-    "Invokes cyoda:setup (cloud mode) then cyoda:login",
+    "Invokes cyoda:setup (cloud mode) then cyoda:auth",
     "Imports each workflow to cloud",
     "Runs /cyoda:test against cloud",
     "Instructs user to update app config"
@@ -2383,7 +2383,7 @@ Invoke `/cyoda:design` — describe your application and I'll guide you through 
 Will you develop locally with cyoda-go, or connect straight to Cyoda Cloud?
 
 - **Local (recommended for development):** Run `/cyoda:setup` → choose local
-- **Cloud:** Run `/cyoda:setup` → choose cloud, then `/cyoda:login`
+- **Cloud:** Run `/cyoda:setup` → choose cloud, then `/cyoda:auth`
 
 *(After setup is complete, run `/cyoda:status` to confirm connection.)*
 
@@ -2485,7 +2485,7 @@ Save to `cyoda/skills/app/SKILL.md`.
   },
   "expectedBehavior": [
     "Accepts cloud-first approach",
-    "Guides to /cyoda:setup (cloud mode) then /cyoda:login",
+    "Guides to /cyoda:setup (cloud mode) then /cyoda:auth",
     "Does not insist on local cyoda-go installation",
     "Full journey works with cloud endpoint"
   ],
@@ -2565,7 +2565,7 @@ In the session:
 ```
 
 Expected: all 11 skills appear under the `cyoda` namespace:
-`cyoda:status`, `cyoda:docs`, `cyoda:setup`, `cyoda:login`, `cyoda:design`, `cyoda:build`, `cyoda:compute`, `cyoda:test`, `cyoda:debug`, `cyoda:migrate`, `cyoda:app`
+`cyoda:status`, `cyoda:docs`, `cyoda:setup`, `cyoda:auth`, `cyoda:design`, `cyoda:build`, `cyoda:compute`, `cyoda:test`, `cyoda:debug`, `cyoda:migrate`, `cyoda:app`
 
 - [ ] **Step 6: Final commit**
 
@@ -2598,7 +2598,7 @@ Identified from real user session (`_developer/conversation.md`). All changes ap
 
 **Fix:** Step 2 now exports both workflow and JSON Schema via `GET /api/model/export/JSON_SCHEMA/{entity}/{version}` for each entity, and confirms both files exist before proceeding.
 
-### 4. M2M credential explanation in `cyoda:login`
+### 4. M2M credential explanation in `cyoda:auth`
 
 **Problem:** Skill asked for `client_id`/`client_secret` without explaining what they are or where to get them.
 
@@ -2610,7 +2610,7 @@ Identified from real user session (`_developer/conversation.md`). All changes ap
 
 **Fix:** Cloud step 1 now directs to `https://ai.cyoda.net/` and explains that the user can prompt AI Studio to create/list/redeploy environments. Endpoint example updated to correct format: `https://client-<hash>-<env>.eu.cyoda.net`.
 
-### 6. Technical user creation via AI Studio (`cyoda:login` + `cyoda:setup`)
+### 6. Technical user creation via AI Studio (`cyoda:auth` + `cyoda:setup`)
 
 **Problem:** No guidance on how to create M2M credentials through AI Studio.
 

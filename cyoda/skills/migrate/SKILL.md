@@ -57,7 +57,7 @@ Show the user what was exported — confirm both schema and workflow files exist
 
 *"Now let's connect to Cyoda Cloud. I'll invoke `/cyoda:setup` (cloud mode)."*
 
-Invoke `cyoda:setup` for cloud setup, then `cyoda:login` for authentication.
+Invoke `cyoda:setup` for cloud setup, then `cyoda:auth` for authentication.
 
 After setup: re-read `.cyoda/config` to confirm cloud endpoint is active.
 
@@ -107,7 +107,7 @@ Invoke `/cyoda:test` against the cloud endpoint. All tests should pass identical
 
 *"Migration complete. Update your application to use:*
 - *`endpoint`: {cloud endpoint}*
-- *`token`: (from `/cyoda:login`)*
+- *`token`: (from `/cyoda:auth`)*
 
 *The API surface is identical — no code changes needed."*
 

@@ -13,7 +13,7 @@
         { "id": "exports-workflows", "text": "Exports all entity workflows to migration/ directory", "type": "behavior" },
         { "id": "exports-schemas", "text": "Exports JSON Schema (field definitions) for each entity via /api/model/export/JSON_SCHEMA/{entity}/{version}", "type": "behavior" },
         { "id": "confirms-export-complete", "text": "Confirms both schema and workflow files exist for each entity before proceeding", "type": "behavior" },
-        { "id": "invokes-setup-login", "text": "Invokes /cyoda:setup (cloud mode) then /cyoda:login", "type": "behavior" },
+        { "id": "invokes-setup-login", "text": "Invokes /cyoda:setup (cloud mode) then /cyoda:auth", "type": "behavior" },
         { "id": "imports-to-cloud", "text": "Imports each workflow to cloud", "type": "behavior" },
         { "id": "runs-test-on-cloud", "text": "Runs /cyoda:test against cloud after import", "type": "behavior" },
         { "id": "instructs-config-update", "text": "Instructs user to update app config to point to cloud", "type": "behavior" },

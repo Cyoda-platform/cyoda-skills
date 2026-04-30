@@ -80,7 +80,7 @@ grep -qxF '.cyoda/config' .gitignore 2>/dev/null || echo '.cyoda/config' >> .git
 grep -qxF '.cyoda/' .gitignore 2>/dev/null || echo '.cyoda/' >> .gitignore
 ```
 
-Confirm: **"Local cyoda-go is running. REST on port 8080, gRPC on port 9090. `/cyoda:login` is not needed for local — mock auth is active."**
+Confirm: **"Local cyoda-go is running. REST on port 8080, gRPC on port 9090. `/cyoda:auth` is not needed for local — mock auth is active."**
 
 ---
 
@@ -124,7 +124,7 @@ grep -qxF '.cyoda/' .gitignore 2>/dev/null || echo '.cyoda/' >> .gitignore
 
 **Step 4 — Prompt for auth:**
 
-*"Endpoint saved. Now run `/cyoda:login` to authenticate and obtain your JWT token."*
+*"Endpoint saved. Now run `/cyoda:auth` to authenticate and obtain your JWT token."*
 
 After login, verify connectivity:
 ```bash

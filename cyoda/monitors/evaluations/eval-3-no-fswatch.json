@@ -2,8 +2,8 @@
   "name": "fswatch unavailable — monitor falls back to polling",
   "description": "Verifies that the monitor degrades gracefully on systems where neither fswatch (macOS) nor inotifywait (Linux) is installed, using a polling loop instead, and still delivers notifications when .cyoda/config changes.",
   "input": {
-    "environment": "Linux or macOS environment where fswatch and inotifywait are both absent; .cyoda/config exists and is then modified by cyoda:login",
-    "trigger": "cyoda:login updates .cyoda/config; the polling loop detects the changed mtime within its 5-second poll interval"
+    "environment": "Linux or macOS environment where fswatch and inotifywait are both absent; .cyoda/config exists and is then modified by cyoda:auth",
+    "trigger": "cyoda:auth updates .cyoda/config; the polling loop detects the changed mtime within its 5-second poll interval"
   },
   "expectedBehavior": [
     "Monitor detects that fswatch and inotifywait are unavailable and silently falls back to the polling loop",

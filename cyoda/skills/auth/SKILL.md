@@ -1,6 +1,6 @@
 ---
-name: login
-description: Authenticate to Cyoda Cloud using OAuth 2.0 client credentials. Obtains a JWT token and saves it to .cyoda/config. Includes production safety guard requiring explicit confirmation before storing production credentials.
+name: auth
+description: Authenticate to Cyoda Cloud using OAuth 2.0 client credentials. Obtains a JWT token and saves it to .cyoda/config. Includes production safety guard requiring explicit confirmation before storing production credentials. Only trigger for Cyoda-specific authentication — do not trigger for generic /login commands unrelated to Cyoda.
 allowed-tools: Bash(curl *) Bash(cat *) Bash(grep *) Bash(tee *) Bash(echo *) Bash(jq *)
 ---
 

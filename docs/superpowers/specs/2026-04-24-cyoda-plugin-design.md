@@ -27,7 +27,7 @@ cyoda/
 │   │   └── SKILL.md
 │   ├── setup/
 │   │   └── SKILL.md
-│   ├── login/
+│   ├── auth/
 │   │   └── SKILL.md
 │   ├── design/
 │   │   └── SKILL.md
@@ -62,7 +62,7 @@ Each skill directory may contain `examples/`, `templates/`, and `resources/` sub
 | `cyoda:test` | User-only | fork | Smoke test: guided scripts + direct execution against running instance |
 | `cyoda:debug` | Both | inline | Diagnose: failed transitions, processor errors, connectivity |
 | `cyoda:setup` | User-only | inline | Provision Cyoda: local cyoda-go install OR cloud connection config |
-| `cyoda:login` | User-only | inline | Obtain JWT token, write endpoint + token to `.cyoda/config` with env safety guard |
+| `cyoda:auth` | User-only | inline | Obtain JWT token, write endpoint + token to `.cyoda/config` with env safety guard |
 | `cyoda:migrate` | User-only | inline | Lift-and-shift: export local → cloud setup → import → verify |
 | `cyoda:app` | User-only | inline | Newcomer orchestrator: orients to Cyoda philosophy, then sequences other skills |
 
@@ -72,7 +72,7 @@ Each skill directory may contain `examples/`, `templates/`, and `resources/` sub
 
 All skills can be invoked by both users and Claude. Sensitive actions are guarded by explicit confirmation prompts within the skill itself:
 
-- `cyoda:login` — requires explicit `yes` before storing production credentials
+- `cyoda:auth` — requires explicit `yes` before storing production credentials
 - `cyoda:build` — displays a prominent production warning and confirms before each registration when `env=production`
 - `cyoda:setup` — asks the user to confirm the mode (local vs cloud) before proceeding
 - `cyoda:migrate`, `cyoda:test` — confirm before making changes to a target instance
@@ -83,7 +83,7 @@ Skills that provide knowledge or guidance (`cyoda:status`, `cyoda:docs`, `cyoda:
 
 ### cyoda:status
 
-Reports the current Cyoda connection status in the conversation. Auto-invoked by Claude at session start and whenever connection context is relevant (e.g., before `cyoda:build`, after `cyoda:login`).
+Reports the current Cyoda connection status in the conversation. Auto-invoked by Claude at session start and whenever connection context is relevant (e.g., before `cyoda:build`, after `cyoda:auth`).
 
 Uses dynamic context injection to read `.cyoda/config`:
 ```
@@ -95,7 +95,7 @@ Then calls the version/health endpoint and reports:
 - `Connected to Cyoda Cloud — v2.1.0 [PRODUCTION]` (cloud, with prominent production marker)
 - `Not connected — run /cyoda:setup to get started` (no config or unreachable)
 
-**Monitor**: `monitors/monitors.json` runs a background command that watches `.cyoda/config` for changes. When the file changes (e.g., after `cyoda:login` or `cyoda:setup`), it notifies Claude with the new connection status automatically — no need for the user to re-invoke.
+**Monitor**: `monitors/monitors.json` runs a background command that watches `.cyoda/config` for changes. When the file changes (e.g., after `cyoda:auth` or `cyoda:setup`), it notifies Claude with the new connection status automatically — no need for the user to re-invoke.
 
 **Status line**: During implementation, explore using Claude Code's status line configuration (`subagentStatusLine` in plugin `settings.json`) for persistent header display of connection state.
 
@@ -190,7 +190,7 @@ Systematic diagnosis and observation of Cyoda entities and workflows. Two modes 
 
 Both modes use the same underlying Cyoda APIs. Delegates to `cyoda:docs` for API reference when needed.
 
-### cyoda:login
+### cyoda:auth
 
 Obtains a JWT token via OAuth 2.0 client credentials flow and writes connection config to `.cyoda/config`.
 
@@ -212,7 +212,7 @@ Skills making API calls (`cyoda:build`, `cyoda:test`, `cyoda:migrate`) read cred
 ```
 !`jq . .cyoda/config 2>/dev/null || echo '{"endpoint":"none"}'`
 ```
-If `endpoint` is absent or `"none"`, the skill prompts the user to run `cyoda:setup` first. If `token` is absent when a cloud instance is required, the skill prompts to run `cyoda:login`.
+If `endpoint` is absent or `"none"`, the skill prompts the user to run `cyoda:setup` first. If `token` is absent when a cloud instance is required, the skill prompts to run `cyoda:auth`.
 
 When `.env` equals `"production"`, all API-calling skills display a visible reminder: *"Operating against a production Cyoda instance."* `cyoda:build` adds an extra confirmation step before registering any changes.
 
@@ -230,14 +230,14 @@ Two modes, selected at invocation:
 5. Verify: `curl http://localhost:8080/readyz`
 6. Write `{"endpoint": "http://localhost:8080", "env": "development"}` to `.cyoda/config`
 7. Gitignore `.cyoda/config` and `.cyoda/`
-8. Confirm: mock auth is active — `cyoda:login` not needed for local
+8. Confirm: mock auth is active — `cyoda:auth` not needed for local
 
 **Cloud:**
 1. Check for existing Cyoda Cloud account; if none, direct to Cyoda AI Studio at https://ai.cyoda.net/ — the user can prompt it: "create a new environment", "list my environments", or "redeploy environment X". The response provides the endpoint URL.
 2. Collect endpoint URL (format: `https://client-<hash>-<env>.eu.cyoda.net`); probe reachability before writing config
 3. Write `{"endpoint": "<url>"}` to `.cyoda/config`
 4. Gitignore `.cyoda/config` and `.cyoda/`
-5. Prompt user to run `cyoda:login` to complete auth
+5. Prompt user to run `cyoda:auth` to complete auth
 6. Verify connectivity with a test API call after login
 
 ### cyoda:migrate
@@ -281,7 +281,7 @@ Connection config is stored in a project-level `.cyoda/config` file (always giti
 
 `token` is absent for local cyoda-go (mock auth, no token needed). `env` defaults to `"development"` when absent.
 
-Skills read this file via dynamic context injection at invocation time using `jq`. If the file is missing or `token` is absent when a cloud instance is required, the skill prompts to run `cyoda:login`.
+Skills read this file via dynamic context injection at invocation time using `jq`. If the file is missing or `token` is absent when a cloud instance is required, the skill prompts to run `cyoda:auth`.
 
 **Production safety rule**: `"env": "production"` is only written after explicit user confirmation. When `.env` equals `"production"`, all API-calling skills display a production reminder and `cyoda:build` requires confirmation before registering changes.
 
