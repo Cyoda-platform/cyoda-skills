@@ -19,7 +19,8 @@
         { "id": "instructs-config-update", "text": "Instructs user to update app config to point to cloud", "type": "behavior" },
         { "id": "no-migrate-without-verify", "text": "Does NOT attempt export without first verifying local instance", "type": "behavior" },
         { "id": "no-skip-schema-export", "text": "Does NOT skip schema export — only exporting workflow is insufficient", "type": "behavior" },
-        { "id": "precheck-before-import", "text": "Runs Phase 4a GET queries against cloud for each entity before issuing any POST import command", "type": "behavior" }
+        { "id": "precheck-before-import", "text": "Runs Phase 4a GET queries against cloud for each entity before issuing any POST import command", "type": "behavior" },
+        { "id": "no-localhost-in-import", "text": "Phase 4a and 4b URLs do NOT contain 'localhost' or '127.0.0.1' — all cloud operations target the cloud endpoint", "type": "behavior" }
       ]
     },
     {
@@ -31,7 +32,7 @@
       },
       "assertions": [
         { "id": "detects-unreachable", "text": "Detects local instance is unreachable", "type": "behavior" },
-        { "id": "instructs-start", "text": "Tells user to run `cyoda` to start cyoda-go — not a generic error message", "type": "behavior" },
+        { "id": "instructs-start", "text": "Output contains the literal string `cyoda` (backtick-quoted command) as the instruction to start the server", "type": "format" },
         { "id": "stops-gracefully", "text": "Stops gracefully — does not attempt export", "type": "behavior" },
         { "id": "no-silent-proceed", "text": "Does NOT silently proceed to cloud setup without local data", "type": "behavior" }
       ]
@@ -47,7 +48,7 @@
         { "id": "checks-cloud-before-any-import", "text": "Queries cloud for existing workflows (Phase 4a) before issuing any POST import command", "type": "behavior" },
         { "id": "shows-diff", "text": "Shows a diff of the conflicting workflow (state names or transition count differs between local and cloud)", "type": "format" },
         { "id": "asks-overwrite-or-skip", "text": "Asks whether to overwrite or skip the conflicting workflow", "type": "behavior" },
-        { "id": "all-conflicts-before-asking", "text": "Presents both Order and Product conflicts in a single combined prompt — does NOT ask entity-by-entity", "type": "behavior" },
+        { "id": "all-conflicts-before-asking", "text": "Presents both Order and Product conflicts in a single combined prompt — no intermediate prompt appears between showing Order's conflict and Product's", "type": "behavior" },
         { "id": "respects-user-choice", "text": "Imports only entities the user marked overwrite or new; skips the rest", "type": "behavior" },
         { "id": "no-silent-overwrite", "text": "Does NOT issue any POST import before user has responded to the conflict prompt", "type": "behavior" }
       ]
@@ -61,6 +62,7 @@
       },
       "assertions": [
         { "id": "precheck-uses-cloud-endpoint", "text": "Phase 4a GET queries target the cloud endpoint (from post-setup config), not the original local endpoint", "type": "behavior" },
+        { "id": "no-localhost-in-cloud-ops", "text": "Phase 4a and 4b URLs do NOT contain 'localhost' or '127.0.0.1'", "type": "behavior" },
         { "id": "no-conflict-prompt", "text": "Does NOT ask the user overwrite/skip when all entities are new (no cloud workflows exist)", "type": "behavior" },
         { "id": "imports-all", "text": "Imports all entities without interruption when no conflicts exist", "type": "behavior" }
       ]
