@@ -38,16 +38,30 @@
     {
       "id": 3,
       "prompt": "/cyoda:migrate — my order entity already exists in cloud with an old workflow",
-      "expected_output": "Checks what exists in cloud before importing, shows the conflict, asks whether to overwrite or skip, proceeds based on user choice",
+      "expected_output": "Checks all cloud entities before importing, shows diff for the conflicting Order entity, asks overwrite or skip, proceeds based on user choice — does not import until user decides",
       "files": {
         ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
       "assertions": [
-        { "id": "checks-cloud-first", "text": "Checks what already exists in cloud before importing", "type": "behavior" },
-        { "id": "shows-conflict", "text": "Shows the conflict to the user", "type": "format" },
+        { "id": "checks-cloud-before-any-import", "text": "Queries cloud for existing workflows (Phase 4a) before issuing any POST import command", "type": "behavior" },
+        { "id": "shows-diff", "text": "Shows a diff of the conflicting workflow (state names or transition count differs between local and cloud)", "type": "format" },
         { "id": "asks-overwrite-or-skip", "text": "Asks whether to overwrite or skip the conflicting workflow", "type": "behavior" },
-        { "id": "respects-user-choice", "text": "Proceeds based on user's choice", "type": "behavior" },
-        { "id": "no-silent-overwrite", "text": "Does NOT silently overwrite existing cloud workflows", "type": "behavior" }
+        { "id": "all-conflicts-before-asking", "text": "Collects all conflicts across entities before asking — does NOT ask entity-by-entity mid-import", "type": "behavior" },
+        { "id": "respects-user-choice", "text": "Imports only entities the user marked overwrite or new; skips the rest", "type": "behavior" },
+        { "id": "no-silent-overwrite", "text": "Does NOT issue any POST import before user has responded to the conflict prompt", "type": "behavior" }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/cyoda:migrate",
+      "expected_output": "All entities are new (no cloud workflows exist yet) — pre-check completes with no conflicts and proceeds to import without interrupting the user",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
+      },
+      "assertions": [
+        { "id": "runs-precheck", "text": "Runs Phase 4a pre-check against cloud for each entity before importing", "type": "behavior" },
+        { "id": "no-conflict-prompt", "text": "Does NOT ask the user overwrite/skip when all entities are new (no cloud workflows exist)", "type": "behavior" },
+        { "id": "imports-all", "text": "Imports all entities without interruption when no conflicts exist", "type": "behavior" }
       ]
     }
   ]

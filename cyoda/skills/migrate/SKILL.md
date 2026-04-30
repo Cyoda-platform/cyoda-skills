@@ -61,13 +61,35 @@ Invoke `cyoda:setup` for cloud setup, then `cyoda:login` for authentication.
 
 After setup: re-read `.cyoda/config` to confirm cloud endpoint is active.
 
-### Step 4 — Import to cloud
+### Step 4 — Pre-check cloud, then import
+
+**Phase 4a — Pre-check (read-only, no mutations yet)**
+
+For each exported entity, query the cloud instance:
 
 ```bash
 ENDPOINT=$(jq -r '.endpoint' .cyoda/config)
 TOKEN=$(jq -r '.token' .cyoda/config)
 
-# Import each workflow
+curl -sf \
+  -H "Authorization: Bearer $TOKEN" \
+  "${ENDPOINT}/api/model/${ENTITY_NAME}/${MODEL_VERSION}/workflow"
+```
+
+Classify each entity:
+- **404 / no workflow**: new — will import without asking
+- **200, workflow matches local**: up-to-date — will skip without asking
+- **200, workflow differs**: conflicting — show a diff (state names, transition count) and ask the user: *"Overwrite or skip?"*
+- **5xx**: surface the error and stop
+
+If no conflicts exist across all entities, proceed to Phase 4b without any interruption.
+If conflicts exist, show all of them in a single summary before asking — not one-by-one.
+
+**Phase 4b — Import**
+
+Execute imports only for entities marked new or overwrite. Skip the rest.
+
+```bash
 curl -sf -X POST \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
@@ -75,7 +97,7 @@ curl -sf -X POST \
   "${ENDPOINT}/api/model/${ENTITY_NAME}/${MODEL_VERSION}/workflow/import"
 ```
 
-Repeat for each exported workflow. Show success/failure per import.
+Show success/failure per import.
 
 ### Step 5 — Verify
 
