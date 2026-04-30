@@ -246,9 +246,10 @@ Lift-and-shift from local cyoda-go to Cyoda Cloud:
 
 1. Export all entity models, **JSON Schema (field definitions)**, and workflow configs from local instance (GET endpoints). Schema export uses `GET /api/model/export/JSON_SCHEMA/{entity}/{version}`. Both schema and workflow must be exported per entity.
 2. Invoke `cyoda:setup` (cloud mode) — account setup, endpoint, auth
-3. Import models, schemas, and workflows to cloud instance (POST endpoints)
-4. Run `cyoda:test` against the cloud endpoint to verify behavior matches local
-5. Guide the user to update their application's Cyoda endpoint and auth config
+3. **Pre-check cloud for conflicts (read-only, no mutations)**: for each exported entity, query `GET /api/model/{entity}/{version}/workflow` on the cloud instance. Classify each as: new (no cloud workflow → will import), up-to-date (workflow matches → will skip), or conflicting (workflow differs → show diff of states/transition counts, ask user to choose overwrite or skip per entity). If no conflicts, proceed without interruption. Stop on 5xx errors.
+4. Import — execute imports only for entities marked new or overwrite; skip the rest. Show success/failure per entity.
+5. Run `cyoda:test` against the cloud endpoint to verify behavior matches local
+6. Guide the user to update their application's Cyoda endpoint and auth config
 
 Since Cyoda Cloud and cyoda-go share the same REST/gRPC API surface, migration is purely a configuration change — no code changes required.
 
