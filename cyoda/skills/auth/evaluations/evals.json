@@ -30,6 +30,7 @@
       "assertions": [
         { "id": "shows-security-warning", "text": "Shows security warning about storing production credentials on disk", "type": "behavior" },
         { "id": "requires-explicit-yes", "text": "Requires explicit 'yes' — not any other response", "type": "behavior" },
+        { "id": "confirmation-is-own-step", "text": "Shows the security warning and asks yes/no as a distinct step even though the user pre-stated acceptance in the prompt — does NOT skip the confirmation", "type": "behavior" },
         { "id": "explains-m2m", "text": "Explains that client_id/client_secret are M2M credentials for the application", "type": "behavior" },
         { "id": "writes-production-env", "text": "Writes env=production as a JSON field to .cyoda/config after confirmation", "type": "behavior" },
         { "id": "production-reminder", "text": "Shows prominent production reminder after successful login", "type": "format" }
@@ -46,7 +47,7 @@
         { "id": "shows-warning", "text": "Shows security warning before proceeding", "type": "behavior" },
         { "id": "stops-on-non-yes", "text": "Stops when user response is not explicit 'yes'", "type": "behavior" },
         { "id": "no-credentials-written", "text": "Does NOT write any credentials after a non-yes response", "type": "behavior" },
-        { "id": "suggests-alternatives", "text": "Suggests alternatives such as env vars or cyoda CLI", "type": "behavior" }
+        { "id": "suggests-alternatives", "text": "Suggests CYODA_TOKEN env var as an alternative to persisting credentials on disk", "type": "behavior" }
       ]
     },
     {
@@ -59,7 +60,8 @@
       "assertions": [
         { "id": "recognises-redeploy", "text": "Recognises the post-redeploy scenario as cause of credential failure", "type": "behavior" },
         { "id": "notes-users-deleted", "text": "Notes that technical users may be deleted when an environment is redeployed", "type": "behavior" },
-        { "id": "directs-to-recreate", "text": "Directs user to recreate the technical user in Cyoda AI Studio at https://ai.cyoda.net/", "type": "behavior" }
+        { "id": "directs-to-recreate", "text": "Directs user to recreate the technical user in Cyoda AI Studio at https://ai.cyoda.net/", "type": "behavior" },
+        { "id": "completes-auth", "text": "After user provides new credentials, completes the full auth flow — calls token endpoint and writes token to .cyoda/config", "type": "behavior" }
       ]
     }
   ]

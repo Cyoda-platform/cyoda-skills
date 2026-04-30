@@ -23,7 +23,9 @@ If **production**: display this warning and require explicit confirmation:
 >
 > Do you accept this risk? (yes/no)
 
-If user answers anything other than `yes`: stop. Do not write any credentials.
+If user answers anything other than `yes`: stop. Do not write any credentials. Suggest alternatives: *"You can set `CYODA_TOKEN` as an environment variable in your shell session instead — it won't be persisted to disk. Or use the Cyoda CLI's own credential store if available."*
+
+**Important:** Always show the warning and explicitly ask `yes/no` — even if the user appeared to pre-accept in their initial message. The confirmation must be its own step.
 
 **Step 2 — Explain and collect credentials:**
 
