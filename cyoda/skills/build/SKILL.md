@@ -36,8 +36,9 @@ Ask: *"What would you like to add or change? Options:*
 - *New transition between states*
 - *Add criteria to a transition*
 - *Add a processor to a transition*
-- *Lock schema (move from discover to strict mode)*
 - *Something else"*
+
+> Schema stays in **discover mode** during development — Cyoda infers it automatically from the entities you post. Only lock the schema when you're confident all fields are known and you're moving to production.
 
 Wait for the user's choice.
 
@@ -51,7 +52,7 @@ Based on the chosen increment, ask the minimum clarifying questions (one at a ti
 ```
 *"Does this look right? (yes to proceed, or describe changes)"*
 
-Use [templates/workflow.json](templates/workflow.json) and [templates/entity-model.json](templates/entity-model.json) as starting points.
+Use [templates/workflow.json](templates/workflow.json) and [templates/sample-entity.json](templates/sample-entity.json) as starting points.
 
 ### Step 4 — Register
 
@@ -69,7 +70,7 @@ curl -X POST ${AUTH_HEADER} \
   "${ENDPOINT%/}/api/model/${ENTITY_NAME}/${MODEL_VERSION}/workflow/import"
 ```
 
-Show the response. If error: delegate to `/cyoda:debug` for diagnosis.
+Show the response. If the call returns 4xx/5xx: run `cyoda help models` before retrying — do not guess alternate endpoints. Then delegate to `/cyoda:debug` for persistent issues.
 
 ### Step 5 — Verify and loop
 
