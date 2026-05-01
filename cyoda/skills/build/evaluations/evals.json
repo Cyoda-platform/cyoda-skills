@@ -62,5 +62,31 @@
         { "id": "no-404-retry-loop", "text": "Does NOT retry failed endpoints — derives correct endpoint from cyoda help before first attempt", "type": "behavior" }
       ]
     }
+    ,{
+      "id": 5,
+      "prompt": "/cyoda:build — register a new Order entity with draft and submitted states on a fresh instance",
+      "expected_output": "Posts a sample entity to create the model in discover mode before importing the workflow — does not call workflow/import as the first API call",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
+      },
+      "assertions": [
+        { "id": "entity-post-before-workflow", "text": "POSTs a sample entity to /api/entity/JSON/{entity}/1 before calling /api/model/{entity}/1/workflow/import", "type": "behavior" },
+        { "id": "no-workflow-first", "text": "Does NOT call /api/model/{entity}/1/workflow/import as the first API call on a fresh instance", "type": "behavior" },
+        { "id": "discover-mode-default", "text": "Does NOT lock the schema — stays in discover mode after workflow import", "type": "behavior" }
+      ]
+    }
+    ,{
+      "id": 6,
+      "prompt": "/cyoda:build — I want to add a ChatRoom entity and a Message entity",
+      "expected_output": "Builds both entities in discover mode without suggesting or performing schema locking — mentions discover mode stays active during development",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
+      },
+      "assertions": [
+        { "id": "no-lock-suggestion", "text": "Does NOT suggest locking the schema during a normal development build session", "type": "behavior" },
+        { "id": "no-lock-execution", "text": "Does NOT execute a schema lock operation", "type": "behavior" },
+        { "id": "mentions-discover-mode", "text": "Mentions that schema stays in discover mode during development", "type": "behavior" }
+      ]
+    }
   ]
 }
