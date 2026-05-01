@@ -44,15 +44,24 @@ Ask for `client_id` and `client_secret` separately, one at a time. Do not echo t
 
 **Step 3 — Obtain JWT token:**
 
+If the cyoda CLI is installed, first confirm the current-version endpoint:
+```bash
+which cyoda >/dev/null 2>&1 && cyoda help config auth --format=markdown 2>/dev/null | head -40
+```
+
+Then call the token endpoint using Basic auth (client credentials in the `Authorization` header, not the request body):
+
 ```bash
 ENDPOINT=$(jq -r '.endpoint' .cyoda/config)
-TOKEN_RESPONSE=$(curl -sf -X POST "${ENDPOINT%/}/oauth/token" \
+CREDENTIALS=$(printf "%s" "${CLIENT_ID}:${CLIENT_SECRET}" | base64)
+TOKEN_RESPONSE=$(curl -sf -X POST "${ENDPOINT%/}/api/oauth/token" \
+  -H "Authorization: Basic ${CREDENTIALS}" \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}")
+  -d "grant_type=client_credentials")
 echo "$TOKEN_RESPONSE"
 ```
 
-Note: Verify the exact OAuth token endpoint path against the Cyoda OpenAPI spec. Common paths: `/oauth/token`, `/auth/token`, `/api/auth/token`.
+If this returns 4xx/5xx: run `cyoda help config auth` to get the current-version endpoint for your installation. Do NOT try alternate paths — fix the one call based on what `cyoda help` tells you.
 
 If the curl fails or returns an error: show the error and stop. Do not write partial credentials.
 
