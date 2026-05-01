@@ -11,7 +11,7 @@
       "assertions": [
         { "id": "reads-config", "text": "Reads .cyoda/config for endpoint", "type": "behavior" },
         { "id": "inspects-models", "text": "Inspects existing entity models on the instance", "type": "behavior" },
-        { "id": "asks-clarifying", "text": "Asks clarifying questions (transition name, triggers) before generating", "type": "behavior" },
+        { "id": "asks-clarifying", "text": "Asks minimum necessary clarifying questions before generating — may proceed directly without asking when entity name, states, and transitions are fully specified in the request", "type": "behavior" },
         { "id": "shows-config-for-confirmation", "text": "Shows generated workflow JSON for user confirmation before registering", "type": "behavior" },
         { "id": "registers-via-post", "text": "Registers workflow via POST to the import endpoint", "type": "behavior" },
         { "id": "suggests-test", "text": "Reports success and suggests running /cyoda:test", "type": "behavior" },

@@ -12,7 +12,7 @@
         { "id": "asks-env-type", "text": "Asks whether this is development or production environment", "type": "behavior" },
         { "id": "explains-m2m", "text": "Explains that client_id/client_secret are machine-to-machine credentials identifying the application, not a personal login", "type": "behavior" },
         { "id": "asks-if-have-credentials", "text": "Asks whether user already has client_id and client_secret before collecting", "type": "behavior" },
-        { "id": "directs-to-ai-studio", "text": "Directs user without credentials to Cyoda AI Studio at https://ai.cyoda.net/ to create a technical user", "type": "behavior" },
+        { "id": "directs-to-ai-studio", "text": "Asks whether user already has credentials — if the user says no, would direct them to Cyoda AI Studio at https://ai.cyoda.net/; in this eval the user says yes so the redirect path is not exercised but the conditional check must be present", "type": "behavior" },
         { "id": "collects-credentials", "text": "Collects client_id and client_secret separately, one at a time", "type": "behavior" },
         { "id": "calls-token-endpoint", "text": "Calls OAuth token endpoint", "type": "behavior" },
         { "id": "writes-token", "text": "Writes token and env=development as JSON fields to .cyoda/config", "type": "behavior" },
