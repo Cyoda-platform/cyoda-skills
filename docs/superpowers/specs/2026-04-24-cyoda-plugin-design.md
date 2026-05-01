@@ -1,7 +1,7 @@
 # Cyoda Plugin Design
 
 **Date:** 2026-04-24
-**Updated:** 2026-04-27
+**Updated:** 2026-05-02
 **Status:** Implemented
 
 ## Overview
@@ -140,7 +140,7 @@ Incremental build loop — supports both new additions and modifications to exis
 1. **Inspect**: query the running Cyoda instance (`GET /api/model/*`) to show what already exists. If no instance is reachable, prompt the user to run `cyoda:setup` first.
 2. **Brainstorm**: ask what to add or change next — one increment at a time (new entity, new state, new transition, schema lock, etc.)
 3. **Clarify**: show the proposed JSON config, confirm with user before registering
-4. **Register**: run `cyoda help models` + `cyoda help workflows` first to derive the correct API sequence (create model → import workflow → lock), then execute. The skill carries only conceptual descriptions of each sub-step — exact endpoints come from `cyoda help` at runtime. Requires `Bash(cyoda *)` in `allowed-tools`.
+4. **Register**: run `cyoda help models` + `cyoda help workflows` first to derive the correct API sequence, then execute. Correct sequence: (1) POST a sample entity to `POST /api/entity/JSON/{entity}/1` — this auto-creates the model in discover mode; (2) POST workflow to `POST /api/model/{entity}/1/workflow/import`. Do NOT lock the schema during development. On 4xx/5xx, run `cyoda help models` before retrying — do not guess alternate endpoints. Requires `Bash(cyoda *)` in `allowed-tools`.
 5. **Verify**: prompt to run `cyoda:test`, show the current entity/workflow state
 6. **Loop**: back to step 2 for the next increment
 
@@ -204,7 +204,7 @@ Obtains a JWT token via OAuth 2.0 client credentials flow and writes connection 
      - If yes: collect them and proceed.
      - If no: direct to Cyoda AI Studio at https://ai.cyoda.net/ — ask it to "create a technical user". Return once credentials are available.
    - **Post-redeploy note**: if the environment was recently redeployed, technical users may have been deleted — credentials that previously worked may fail. In that case, recreate the technical user in AI Studio.
-5. Call OAuth token endpoint, obtain JWT
+5. Call OAuth token endpoint, obtain JWT. Correct endpoint: `POST {endpoint}/api/oauth/token` with `Authorization: Basic base64(client_id:client_secret)` header — credentials are NOT in the request body. If CLI is available, run `cyoda help config auth` first to confirm the current-version endpoint. On 4xx/5xx, consult `cyoda help config auth` rather than guessing alternate paths.
 6. Merge `token` and `env` into `.cyoda/config` using `jq` (preserves existing `endpoint`)
 7. Add `.cyoda/config` and `.cyoda/` to `.gitignore` if not already present
 
@@ -331,7 +331,7 @@ Skills with non-trivial supporting files (others have only `evaluations/`):
 | Skill | Supporting files |
 |---|---|
 | `cyoda:design` | `resources/patterns.md` — common workflow patterns (approval flow, saga, scheduled retry, auto-transition cascade, multi-workflow models) |
-| `cyoda:build` | `templates/workflow.json`, `templates/entity-model.json`, `examples/` |
+| `cyoda:build` | `templates/workflow.json`, `templates/sample-entity.json`, `examples/` |
 | `cyoda:compute` | `resources/grpc-patterns.md`, `examples/processor.md`, `examples/criteria.md` |
 | `cyoda:test` | `templates/smoke-test.sh` |
 | `cyoda:migrate` | `templates/migration-checklist.md` |

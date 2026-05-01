@@ -2621,3 +2621,27 @@ Identified from real user session (`_developer/conversation.md`). All changes ap
 **Problem:** Step 4 showed a hardcoded curl example for workflow import without first establishing the entity model. Claude attempted the wrong sequence, received 404s, and only consulted `cyoda help` after failure.
 
 **Fix:** Step 4 now runs `cyoda help models` + `cyoda help workflows` as a mandatory first sub-step before issuing any curl commands. The skill retains conceptual descriptions (create model → import workflow → lock) but no hardcoded endpoint paths. `Bash(cyoda *)` added to `allowed-tools`. Eval #4 added asserting docs are consulted before any POST.
+
+---
+
+## Post-Launch Improvements (2026-05-01)
+
+Identified from real user session (`_developer/conversation.md`). Three recurring failures observed when building a sample Cyoda application. All changes applied to skill files and evals.
+
+### 1. Correct OAuth endpoint and Basic auth in `cyoda:auth`
+
+**Problem:** Step 3 listed several possible OAuth endpoint paths ("Common paths: /oauth/token, /auth/token, /api/auth/token"), causing Claude to iterate through 6+ paths before finding the correct one. The Cyoda Cloud OAuth endpoint requires credentials in the `Authorization: Basic` header (Base64-encoded `client_id:client_secret`), not in the request body.
+
+**Fix:** Step 3 now uses the known-good pattern as the primary attempt: `POST {endpoint}/api/oauth/token` with `Authorization: Basic base64(client_id:client_secret)` header and `grant_type=client_credentials` in the form body (no credentials in body). Vague "try these paths" note replaced with a self-correction rule: "If this returns 4xx/5xx, run `cyoda help config auth` — do NOT try alternate paths." Added eval #5 asserting Basic auth header and `/api/oauth/token` on first attempt.
+
+### 2. Model creation before workflow import in `cyoda:build`
+
+**Problem:** The `hello-world.md` example and Step 4 guidance implied Claude could call `POST /api/model/{entity}/1/workflow/import` as the first API call. On a fresh instance with no model, this returns 404. The `entity-model.json` template documented `{"entityName": "...", "schemaMode": "discover"}` — a format matching no real Cyoda API endpoint.
+
+**Fix:** `hello-world.md` rewritten with the correct 3-step flow: (1) `POST /api/entity/JSON/{entity}/1` with a sample payload to auto-create the model in discover mode, (2) `POST /api/model/{entity}/1/workflow/import` with workflow JSON, (3) trigger a state transition. `entity-model.json` deleted and replaced with `sample-entity.json` containing `{"field1": "example", "field2": 0}` — the actual body for creating a model in discover mode. Added eval #5 asserting sample entity POST precedes workflow import.
+
+### 3. Discover mode as default in `cyoda:build`
+
+**Problem:** Step 2 brainstorm menu listed "Lock schema" as a standard option. Claude locked the schema after posting minimal sample data. When the application later posted richer entities, Cyoda rejected fields not in the locked schema (`BAD_REQUEST: unexpected field not present in model`).
+
+**Fix:** "Lock schema" removed from the Step 2 brainstorm menu. Discover-mode note added: "Schema stays in **discover mode** during development — Cyoda infers it automatically from the entities you post. Only consider locking when you're confident all fields are known and you're moving to production." Step 4 self-correction rule added: "If any API call returns 4xx/5xx, run `cyoda help models` before retrying — do not guess alternate endpoints." Added eval #6 asserting no lock suggestion during a normal development build session.
