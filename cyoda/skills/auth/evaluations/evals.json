@@ -63,6 +63,20 @@
         { "id": "directs-to-recreate", "text": "Directs user to recreate the technical user in Cyoda AI Studio at https://ai.cyoda.net/", "type": "behavior" },
         { "id": "completes-auth", "text": "After user provides new credentials, completes the full auth flow — calls token endpoint and writes token to .cyoda/config", "type": "behavior" }
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "/cyoda:auth — connect to a Cyoda Cloud dev environment with client_id=abc123 and client_secret=xyz789",
+      "expected_output": "Uses Authorization: Basic header with base64-encoded client_id:client_secret against /api/oauth/token on the first attempt, without iterating through multiple paths",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"https://client-1edf4e3da14e497baf58d3aeb621ac40-dev.eu.cyoda.net\"}"
+      },
+      "assertions": [
+        { "id": "basic-auth-header", "text": "Uses Authorization: Basic header with base64-encoded client_id:client_secret — credentials are NOT in the request body", "type": "behavior" },
+        { "id": "correct-endpoint-first", "text": "Calls /api/oauth/token on the first attempt — does NOT try /oauth/token, /auth/token, or other paths first", "type": "behavior" },
+        { "id": "no-path-guessing", "text": "Does NOT iterate through multiple token endpoint paths on failure — consults cyoda help config auth instead", "type": "behavior" },
+        { "id": "consults-cyoda-help-on-failure", "text": "If token call fails, runs 'cyoda help config auth' before retrying — does not guess alternate paths", "type": "behavior" }
+      ]
     }
   ]
 }
