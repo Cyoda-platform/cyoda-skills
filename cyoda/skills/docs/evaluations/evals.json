@@ -15,25 +15,26 @@
     },
     {
       "id": 2,
-      "prompt": "What's the endpoint to trigger a transition?",
-      "expected_output": "Asks whether to install cyoda CLI via /cyoda:setup or use web docs — does not proceed without user choice. Assumes cyoda CLI is NOT installed.",
+      "prompt": "What's the endpoint to trigger a transition? (assume CLI not installed, user has chosen web docs)",
+      "expected_output": "Detects CLI is missing, user chooses web docs — fetches llms.txt first to find the relevant page, then fetches that page and synthesizes the answer.",
       "files": {},
       "assertions": [
         { "id": "detects-cli-missing", "text": "Detects cyoda CLI is not installed", "type": "behavior" },
-        { "id": "offers-choice", "text": "Asks user whether to install via /cyoda:setup or use web docs", "type": "behavior" },
-        { "id": "waits-for-choice", "text": "Does NOT proceed to answer without user's choice", "type": "behavior" },
-        { "id": "explains-preference", "text": "Explains why local docs are preferred over web docs", "type": "behavior" }
+        { "id": "fetches-llms-txt", "text": "Fetches https://docs.cyoda.net/llms.txt before fetching any other docs page", "type": "behavior" },
+        { "id": "fetches-relevant-page", "text": "Uses llms.txt to identify and fetch the specific page relevant to the question rather than fetching the root URL", "type": "behavior" },
+        { "id": "synthesizes-answer", "text": "Synthesizes a direct answer with the transition endpoint", "type": "behavior" }
       ]
     },
     {
       "id": 3,
       "prompt": "How does Cyoda handle schema version migration when I lock a model and then need to add a field?",
-      "expected_output": "Complete answer combining local cyoda help and web docs, noting that web docs may differ from installed version. Assumes cyoda CLI is installed.",
+      "expected_output": "Checks local cyoda help first, then fetches llms.txt to find the relevant web page, fetches that page, and synthesizes a complete answer. Assumes cyoda CLI is installed.",
       "files": {},
       "assertions": [
         { "id": "checks-local-help", "text": "Runs cyoda help first", "type": "behavior" },
-        { "id": "supplements-with-web", "text": "Fetches supplementary info from web docs when local help is insufficient", "type": "behavior" },
-        { "id": "synthesizes-complete", "text": "Synthesizes a complete answer combining both sources", "type": "behavior" },
+        { "id": "fetches-llms-txt", "text": "Fetches https://docs.cyoda.net/llms.txt before fetching any other docs page when supplementing local help", "type": "behavior" },
+        { "id": "fetches-relevant-page", "text": "Uses llms.txt to identify and fetch the specific page relevant to schema migration rather than fetching a broad URL", "type": "behavior" },
+        { "id": "synthesizes-complete", "text": "Synthesizes a complete answer combining local help and web docs", "type": "behavior" },
         { "id": "no-stops-at-local", "text": "Does NOT stop at 'cyoda help doesn't cover this' without checking web docs", "type": "behavior" }
       ]
     }

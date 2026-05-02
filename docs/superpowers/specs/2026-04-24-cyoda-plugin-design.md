@@ -108,8 +108,8 @@ Uses dynamic context injection to check for local cyoda CLI at invocation time:
 ```
 
 **Behavior:**
-1. If cyoda CLI is not installed: asks the user whether they want to install it locally — local docs are version-specific and more accurate for API-level questions. If yes, delegates to `cyoda:setup` (local mode), then retries. If no, falls back to web docs (noting they reflect the latest, possibly different version).
-2. If cyoda CLI is installed: uses `cyoda help` output as the primary source. Fetches web docs for anything not covered locally.
+1. If cyoda CLI is not installed: asks the user whether they want to install it locally — local docs are version-specific and more accurate for API-level questions. If yes, delegates to `cyoda:setup` (local mode), then retries. If no, falls back to web docs: fetches `https://docs.cyoda.net/llms.txt` first to get a structured index, then fetches the specific page(s) relevant to the question.
+2. If cyoda CLI is installed: uses `cyoda help` output as the primary source. For anything not covered locally, fetches `https://docs.cyoda.net/llms.txt` first to identify the relevant page, then fetches that page directly.
 3. Always synthesizes a direct answer to the user's question — never dumps raw help output.
 
 This skill is callable by other skills (e.g., `cyoda:build` delegates here when it needs API details) and also useful as a standalone `/cyoda:docs` command.
@@ -137,14 +137,14 @@ Output: a structured app design that feeds into `cyoda:build`.
 
 Incremental build loop — supports both new additions and modifications to existing configs (adding states, transitions, criteria, changing schema mode):
 
-1. **Inspect**: query the running Cyoda instance (`GET /api/model/*`) to show what already exists. If no instance is reachable, prompt the user to run `cyoda:setup` first.
-2. **Brainstorm**: ask what to add or change next — one increment at a time (new entity, new state, new transition, schema lock, etc.)
+1. **Inspect**: query the running Cyoda instance (`GET /api/model`) to show what already exists, including the version number for each entity. If no instance is reachable, prompt the user to run `cyoda:setup` first.
+2. **Brainstorm**: ask what to add or change next — one increment at a time (new entity, new state, new transition, etc.). If the target entity already exists, surface a version decision: *"Update existing version N, or create a new version N+1?"* New entities default to version 1.
 3. **Clarify**: show the proposed JSON config, confirm with user before registering
-4. **Register**: run `cyoda help models` + `cyoda help workflows` first to derive the correct API sequence, then execute. Correct sequence: (1) POST a sample entity to `POST /api/entity/JSON/{entity}/1` — this auto-creates the model in discover mode; (2) POST workflow to `POST /api/model/{entity}/1/workflow/import`. Do NOT lock the schema during development. On 4xx/5xx, run `cyoda help models` before retrying — do not guess alternate endpoints. Requires `Bash(cyoda *)` in `allowed-tools`.
+4. **Register**: correct sequence — (1) POST a sample entity to `POST /api/entity/JSON/{entity}/{version}` to auto-create the model in discover mode; (2) POST workflow to `POST /api/model/{entity}/{version}/workflow/import`. Do NOT lock the schema during development. On 4xx/5xx, invoke `cyoda:docs` to look up the correct endpoint — do not guess alternate paths.
 5. **Verify**: prompt to run `cyoda:test`, show the current entity/workflow state
 6. **Loop**: back to step 2 for the next increment
 
-Requires `allowed-tools: Bash(curl *)` for REST API calls and `Bash(cyoda *)` to run `cyoda help` in Step 4.
+**API rule**: Never construct or guess an API URL not explicitly listed in this skill. For any other endpoint (export, search, etc.), invoke `cyoda:docs` first. Do not use curl OPTIONS for CORS diagnostics — CORS issues are a setup concern, not a build concern.
 
 Handles the full lifecycle: create → evolve → lock. This also covers the hello world / quickstart path — the user starts the loop and the first increment is simply the minimal entity + workflow.
 

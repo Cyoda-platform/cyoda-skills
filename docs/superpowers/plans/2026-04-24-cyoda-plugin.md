@@ -2645,3 +2645,27 @@ Identified from real user session (`_developer/conversation.md`). Three recurrin
 **Problem:** Step 2 brainstorm menu listed "Lock schema" as a standard option. Claude locked the schema after posting minimal sample data. When the application later posted richer entities, Cyoda rejected fields not in the locked schema (`BAD_REQUEST: unexpected field not present in model`).
 
 **Fix:** "Lock schema" removed from the Step 2 brainstorm menu. Discover-mode note added: "Schema stays in **discover mode** during development — Cyoda infers it automatically from the entities you post. Only consider locking when you're confident all fields are known and you're moving to production." Step 4 self-correction rule added: "If any API call returns 4xx/5xx, run `cyoda help models` before retrying — do not guess alternate endpoints." Added eval #6 asserting no lock suggestion during a normal development build session.
+
+---
+
+## Post-Launch Improvements (2026-05-02)
+
+Identified from real user session (`_developer/conversation.md`). Three recurring failures observed when building a sample Cyoda chat SPA. All changes applied to skill files and evals.
+
+### 1. URL guessing in `cyoda:build`
+
+**Problem:** The build skill guessed API URL patterns (e.g. `/api/model`, `/api/v1/entity-model`, `/model/`, `/api/model/export/JSON/SIMPLE_VIEW/{entity}/1`) before checking the spec, causing multiple 404 cycles before finding the correct paths.
+
+**Fix:** Added a mandatory API rule at the top of `SKILL.md`: "Never construct or guess an API URL not explicitly listed in this skill. For any other endpoint, invoke `cyoda:docs` first." The self-correction rule in Step 4 changed from "run `cyoda help models`" to "invoke `cyoda:docs`" — which handles the binary-not-found case gracefully via `cyoda:docs`'s own web fallback. Added eval #7 asserting no URL guessing for non-listed endpoints, and eval #8 asserting `cyoda:docs` is invoked on 4xx rather than retrying with guessed paths.
+
+### 2. CORS/OPTIONS diagnostics in `cyoda:build`
+
+**Problem:** The build skill used `curl -X OPTIONS` to probe CORS headers in anticipation of a file:// SPA use case. The OPTIONS probe returned misleading results (405 Method Not Allowed), triggering a long search for the cyoda binary to inspect CORS config — a 90-line dead end.
+
+**Fix:** Added explicit prohibition: "Do not use curl OPTIONS for CORS diagnostics — CORS issues are a setup concern, not a build concern. Direct the user to `/cyoda:setup`." Mirrored in design doc under `cyoda:build` API rule.
+
+### 3. Model version handling in `cyoda:build`
+
+**Problem:** API calls hardcoded version `1` (e.g. `/api/entity/JSON/{entity}/1`). The `1` is the model version — if an entity already exists, blindly using version 1 may conflict with an existing model or miss a newer version.
+
+**Fix:** Step 1 now explicitly notes to capture the version number from the `GET /api/model` response. Step 2 adds a version decision prompt when the target entity already exists: "Update existing version N, or create a new version N+1?" New entities default to version 1. All subsequent API calls use the resolved `{version}` variable. Updated design doc to reflect `{version}` instead of `1` in endpoint examples. Added eval #9 asserting the version decision is surfaced when an entity already exists.

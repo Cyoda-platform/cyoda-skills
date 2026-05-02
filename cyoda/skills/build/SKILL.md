@@ -6,6 +6,8 @@ allowed-tools: Bash(curl *) Bash(cat *) Bash(grep *) Bash(echo *) Bash(tee *) Ba
 
 ## Cyoda Incremental Build
 
+**API rule:** Never construct or guess an API URL that is not explicitly listed in this skill. For any endpoint not listed here, invoke `cyoda:docs` to look up the correct path before making the call. Do not use curl OPTIONS for CORS diagnostics — if a SPA can't reach Cyoda, direct the user to `/cyoda:setup`.
+
 Reading connection config:
 ```!
 jq . .cyoda/config 2>/dev/null || echo '{"endpoint":"none"}'
@@ -24,7 +26,7 @@ AUTH_HEADER=$([ -n "$TOKEN" ] && echo "Authorization: Bearer $TOKEN" || echo "X-
 curl -sf -H "$AUTH_HEADER" "${ENDPOINT%/}/api/model" 2>/dev/null || echo "[]"
 ```
 
-Show the user what entity models currently exist in the instance.
+Show the user what entity models currently exist in the instance, including the version number for each.
 
 If this is a fresh instance with no models: suggest starting with the hello world increment. Reference [examples/hello-world.md](examples/hello-world.md) for the minimal starting point.
 
@@ -39,6 +41,8 @@ Ask: *"What would you like to add or change? Options:*
 - *Something else"*
 
 > Schema stays in **discover mode** during development — Cyoda infers it automatically from the entities you post. Only lock the schema when you're confident all fields are known and you're moving to production.
+
+**Version decision:** If the user's chosen increment targets an entity that already exists (visible in Step 1), ask: *"This entity is already registered at version {N}. Do you want to (a) update the existing version, or (b) create a new version {N+1}?"* Use the chosen version in all subsequent API calls. If the entity is new, default to version 1.
 
 Wait for the user's choice.
 
@@ -63,14 +67,14 @@ ENDPOINT=$(jq -r '.endpoint' .cyoda/config)
 TOKEN=$(jq -r '.token // ""' .cyoda/config)
 AUTH_HEADER=$([ -n "$TOKEN" ] && echo "-H 'Authorization: Bearer $TOKEN'" || echo "")
 
-# Example for workflow import — adjust endpoint per the Cyoda OpenAPI spec:
+# Known endpoint — invoke cyoda:docs for any other endpoint:
 curl -X POST ${AUTH_HEADER} \
   -H 'Content-Type: application/json' \
   -d '${GENERATED_CONFIG}' \
   "${ENDPOINT%/}/api/model/${ENTITY_NAME}/${MODEL_VERSION}/workflow/import"
 ```
 
-Show the response. If the call returns 4xx/5xx: run `cyoda help models` before retrying — do not guess alternate endpoints. Then delegate to `/cyoda:debug` for persistent issues.
+Show the response. If the call returns 4xx/5xx: invoke `cyoda:docs` to look up the correct endpoint — do not guess alternate paths. Then delegate to `/cyoda:debug` for persistent issues.
 
 ### Step 5 — Verify and loop
 
@@ -89,4 +93,4 @@ Show the updated model state. Offer: *"Run `/cyoda:test` to smoke-test this incr
 
 Repeat from Step 2 for the next increment.
 
-For API details on any endpoint, invoke `/cyoda:docs`.
+For any endpoint not listed in this skill, invoke `/cyoda:docs` before making the call — never guess.

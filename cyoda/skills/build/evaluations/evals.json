@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "/cyoda:build — add an Order entity with draft and submitted states",
-      "expected_output": "Reads config, inspects existing models, asks clarifying questions, generates workflow JSON, shows it for confirmation, registers via POST, reports success and suggests /cyoda:test",
+      "expected_output": "Reads config, inspects existing models, generates workflow JSON, shows it for confirmation, and stops awaiting user approval — does not register without confirmation",
       "files": {
         ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
@@ -13,8 +13,6 @@
         { "id": "inspects-models", "text": "Inspects existing entity models on the instance", "type": "behavior" },
         { "id": "asks-clarifying", "text": "Asks minimum necessary clarifying questions before generating — may proceed directly without asking when entity name, states, and transitions are fully specified in the request", "type": "behavior" },
         { "id": "shows-config-for-confirmation", "text": "Shows generated workflow JSON for user confirmation before registering", "type": "behavior" },
-        { "id": "registers-via-post", "text": "Registers workflow via POST to the import endpoint", "type": "behavior" },
-        { "id": "suggests-test", "text": "Reports success and suggests running /cyoda:test", "type": "behavior" },
         { "id": "no-register-without-confirm", "text": "Does NOT register without showing config for confirmation first", "type": "behavior" }
       ]
     },
@@ -51,15 +49,15 @@
     ,{
       "id": 4,
       "prompt": "/cyoda:build — register a new ChatRoom entity with a simple workflow",
-      "expected_output": "Runs cyoda help models and cyoda help workflows before issuing any registration curl commands, derives the correct sequence, and executes without 404 errors",
+      "expected_output": "Invokes cyoda:docs for any endpoint not listed in the skill, executes the correct sample-entity-then-workflow-import sequence, and does not guess or retry alternate URLs",
       "files": {
         ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
       },
       "assertions": [
-        { "id": "consults-cyoda-help-first", "text": "Runs cyoda help models and cyoda help workflows before issuing any POST registration commands", "type": "behavior" },
-        { "id": "no-pre-help-curl", "text": "Does NOT issue any curl POST commands before consulting cyoda help", "type": "behavior" },
-        { "id": "correct-sequence", "text": "Executes registration in the correct sequence derived from cyoda help: create model, import workflow", "type": "behavior" },
-        { "id": "no-404-retry-loop", "text": "Does NOT retry failed endpoints — derives correct endpoint from cyoda help before first attempt", "type": "behavior" }
+        { "id": "invokes-docs-for-unlisted-endpoints", "text": "Invokes cyoda:docs before calling any endpoint not explicitly listed in the skill", "type": "behavior" },
+        { "id": "no-url-guessing", "text": "Does NOT construct or guess API URLs — uses only endpoints listed in the skill or confirmed via cyoda:docs", "type": "behavior" },
+        { "id": "correct-sequence", "text": "Executes registration in the correct sequence: POST sample entity to /api/entity/JSON/{entity}/{version} first, then POST workflow to /api/model/{entity}/{version}/workflow/import", "type": "behavior" },
+        { "id": "no-404-retry-loop", "text": "Does NOT retry failed endpoints with guessed variants — invokes cyoda:docs on 4xx before retrying", "type": "behavior" }
       ]
     }
     ,{
@@ -86,6 +84,61 @@
         { "id": "no-lock-suggestion", "text": "Does NOT suggest locking the schema during a normal development build session", "type": "behavior" },
         { "id": "no-lock-execution", "text": "Does NOT execute a schema lock operation", "type": "behavior" },
         { "id": "mentions-discover-mode", "text": "Mentions that schema stays in discover mode during development", "type": "behavior" }
+      ]
+    }
+    ,{
+      "id": 7,
+      "prompt": "/cyoda:build — export the ChatRoom model schema so I can inspect it",
+      "expected_output": "Invokes cyoda:docs to look up the export endpoint before making any curl call — does not guess the URL",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
+      },
+      "assertions": [
+        { "id": "invokes-docs-for-export", "text": "Invokes cyoda:docs to look up the correct export endpoint path", "type": "behavior" },
+        { "id": "no-url-guessing", "text": "Does NOT attempt curl calls with guessed URL variants (e.g. /api/model/export/JSON/SIMPLE_VIEW/... or /api/model/export/JSON/...)", "type": "behavior" },
+        { "id": "no-options-call", "text": "Does NOT use curl OPTIONS for any diagnostic purpose", "type": "behavior" }
+      ]
+    }
+    ,{
+      "id": 8,
+      "prompt": "/cyoda:build — add a Message entity with a sent state",
+      "expected_output": "When a registration call returns 4xx, invokes cyoda:docs rather than retrying with guessed alternate paths",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
+      },
+      "assertions": [
+        { "id": "invokes-docs-on-4xx", "text": "On a 4xx response, invokes cyoda:docs to look up the correct endpoint before retrying", "type": "behavior" },
+        { "id": "no-guess-retry", "text": "Does NOT retry the call with guessed alternate URL variants after a 4xx", "type": "behavior" },
+        { "id": "no-binary-search", "text": "Does NOT search the filesystem for the cyoda binary when cyoda is not in PATH", "type": "behavior" }
+      ]
+    }
+    ,{
+      "id": 9,
+      "prompt": "/cyoda:build — add an archived state to the ChatRoom entity",
+      "expected_output": "Detects ChatRoom already exists at version 1 and asks whether to update the existing version or create version 2 before generating any config",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
+      },
+      "assertions": [
+        { "id": "reads-existing-version", "text": "Reads the current model version from the GET /api/model response", "type": "behavior" },
+        { "id": "surfaces-version-decision", "text": "Asks user whether to update existing version 1 or create a new version 2", "type": "behavior" },
+        { "id": "no-version-assumption", "text": "Does NOT silently assume version 1 and proceed without surfacing the decision", "type": "behavior" },
+        { "id": "uses-resolved-version", "text": "Uses the version chosen by the user in all subsequent API calls", "type": "behavior" }
+      ]
+    }
+    ,{
+      "id": 10,
+      "prompt": "/cyoda:build — yes, the Order entity config looks right, please register it",
+      "expected_output": "Executes the registration POST calls (sample entity then workflow import), shows the API response, re-inspects the model state, reports completion, and suggests running /cyoda:test",
+      "files": {
+        ".cyoda/config": "{\"endpoint\": \"http://localhost:8080\", \"env\": \"development\"}"
+      },
+      "assertions": [
+        { "id": "posts-sample-entity", "text": "Attempts POST to /api/entity/JSON/Order/{version} with a sample payload before the workflow import", "type": "behavior" },
+        { "id": "posts-workflow-import", "text": "Attempts POST to /api/model/Order/{version}/workflow/import with the workflow config", "type": "behavior" },
+        { "id": "shows-api-response", "text": "Shows the API response (success or failure) to the user rather than silently continuing", "type": "behavior" },
+        { "id": "re-inspects-after-registration", "text": "Re-inspects the running instance (GET /api/model) after registration to show what changed", "type": "behavior" },
+        { "id": "suggests-test", "text": "Offers to run /cyoda:test or suggests it as the next step", "type": "behavior" }
       ]
     }
   ]
